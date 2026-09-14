@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <title>Empty Chairs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,13 +63,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .nav-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;
   color:#fff;border:0;border-left:3px solid transparent;border-radius:6px;padding:10px 12px;
   cursor:pointer;font-size:14px}
-.nav-item:hover{background:var(--sidebar-hover)}
 .nav-item[aria-selected="true"]{background:var(--sidebar-hover);border-left-color:var(--accent);font-weight:700}
-.nav-icon{width:18px;text-align:center;opacity:.85;font-size:11px}
+.nav-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;opacity:.85;flex:0 0 auto}
+.nav-icon svg{width:18px;height:18px;display:block}
+.sr-only{display:inline}
 .ro-note{font-size:12px;color:rgba(255,255,255,.7);padding:12px 20px;margin:0}
+.ro-note.head{display:none;margin:0 0 12px;padding:0;color:var(--ink-muted)}
 .main{flex:1;min-width:0;padding:24px 28px 40px}
 .main-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
-.tab-title{font-family:"Bebas Neue",Impact,sans-serif;font-size:34px;letter-spacing:1px;
+.tab-title{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(26px,2.2vw + 12px,40px);letter-spacing:1px;
   text-transform:uppercase;color:var(--ink);line-height:1}
 .top-stats{display:flex;gap:22px;font-size:12px;color:var(--ink-muted)}
 .top-stats b{display:block;font-size:17px;color:var(--ink);font-weight:700;letter-spacing:.2px}
@@ -80,12 +82,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .rail{display:flex;gap:8px;flex:1;min-width:0}
 .rail-nav{flex:0 0 auto;width:32px;border:1px solid var(--line);border-radius:8px;
   color:var(--ink-muted);font-size:15px;line-height:1;background:var(--surface)}
-.rail-nav:hover{background:var(--surface-2);color:var(--ink)}
 .rail-nav[disabled]{opacity:.35;cursor:default}
 .wk-pill{flex:1 1 0;min-width:0;text-align:left;padding:9px 12px 10px;border-radius:8px;
   background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;
   transition:background .15s,border-color .15s}
-.wk-pill:hover{border-color:var(--primary)}
 .wk-pill[aria-current="true"]{background:var(--primary);border-color:var(--primary)}
 .wk-pill .id{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink)}
 .wk-pill .dts{font-size:11px;color:var(--ink-muted);margin-top:1px;
@@ -116,17 +116,15 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   min-width:0;border-bottom:1px dashed transparent}
 .th-in:hover{border-bottom-color:var(--line)}
 .th-in.a{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(25px,3vw,33px);
-  letter-spacing:.5px;line-height:1.06}
+  letter-spacing:.5px;line-height:1.06;overflow-wrap:anywhere}
 .th-in.b{font-size:13.5px;color:var(--ink-muted);letter-spacing:.2px}
 .wh-side{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
 .nav-btns{display:flex;gap:6px}
 .nav-btns button{border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:12px;
   color:var(--ink);letter-spacing:.3px}
-.nav-btns button:hover{background:var(--surface-2)}
 .nav-btns button[disabled]{opacity:.35;cursor:default}
 .why-toggle{font-size:11.5px;color:var(--ink-muted);border:1px solid var(--line);border-radius:6px;
   padding:4px 9px;letter-spacing:.3px}
-.why-toggle:hover{color:var(--ink);background:var(--surface-2)}
 .wh-why{margin:12px 0 0;max-width:78ch;font-size:13.5px;color:var(--ink-muted)}
 .wh-why b{color:var(--ink)}
 .wh-why[hidden]{display:none}
@@ -138,14 +136,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .ov-head h2{font-family:"Bebas Neue",Impact,sans-serif;font-size:32px;letter-spacing:1px;margin:0;line-height:1;color:var(--ink)}
 .ov-head .nav-btns{margin-left:auto}
 .ov-head .nav-btns button{border-color:var(--line);color:var(--ink)}
-.ov-head .nav-btns button:hover{background:var(--surface-2)}
 .ov-theme{font-size:17px;font-weight:700;margin:0 0 6px;color:var(--ink)}
 .ov-lede{margin:0 0 20px;font-size:14px;color:var(--ink-muted);max-width:68ch}
 .wk-rows{display:grid;gap:10px}
 .wk-row{display:grid;grid-template-columns:84px minmax(0,1.1fr) minmax(0,1fr) 104px;gap:18px;
   align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
   border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
-.wk-row:hover{border-color:var(--primary)}
 .wk-row .wn{font-family:"Bebas Neue",Impact,sans-serif;font-size:22px;letter-spacing:.6px;line-height:1;color:var(--ink)}
 .wk-row .wd{font-size:11px;color:var(--ink-muted);letter-spacing:.3px;margin-top:2px}
 .wk-row .ta{font-size:15.5px;font-weight:700;line-height:1.3;color:var(--ink)}
@@ -158,7 +154,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .m-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .m-tile{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
   padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
-.m-tile:hover{border-color:var(--primary)}
 .m-tile .mn{font-family:"Bebas Neue",Impact,sans-serif;font-size:25px;letter-spacing:.8px;line-height:1;
   border-top:3px solid var(--accent);padding-top:12px;color:var(--ink)}
 .m-tile .mt{font-size:15.5px;font-weight:700;line-height:1.32;color:var(--ink)}
@@ -199,8 +194,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:6px}
 .quote{font-size:15px;line-height:1.5;border-left:3px solid var(--accent);padding-left:12px;margin:0;color:var(--ink)}
 .card-body{padding:10px 14px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
-.hook{font-size:16.5px;line-height:1.3;font-weight:700;margin:0;text-wrap:pretty;color:var(--ink)}
-.card.is-open .hook{font-size:22px;max-width:24ch}
+.hook{font-size:clamp(14.5px,1vw + 12px,16.5px);line-height:1.3;font-weight:700;margin:0;text-wrap:pretty;
+  color:var(--ink);overflow-wrap:anywhere}
+.card.is-open .hook{font-size:clamp(18px,2vw + 14px,22px);max-width:24ch}
 .why{margin:0;font-size:12.5px;color:var(--ink-muted)}
 .warn{display:flex;gap:7px;font-size:12px;background:var(--warn-soft);color:var(--warn);
   border-radius:9px;padding:7px 9px;line-height:1.4}
@@ -213,7 +209,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .status[data-s="posted"]{background:var(--primary);color:var(--primary-ink);border-color:transparent}
 .icon-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
   color:var(--ink-muted);border:1px solid var(--line);border-radius:6px;padding:5px 9px;white-space:nowrap}
-.icon-btn:hover{color:var(--ink);border-color:var(--primary)}
 .icon-btn+.icon-btn{margin-left:0}
 .icon-btn[disabled]{opacity:.45;cursor:default}
 .icon-btn svg{width:14px;height:14px}
@@ -245,7 +240,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .empty-detail{font-size:13.5px;color:var(--ink-muted);max-width:52ch}
 .gen-btn{margin-top:10px;background:var(--primary);color:var(--primary-ink);border-radius:6px;
   padding:8px 14px;font-size:13px;font-weight:700;letter-spacing:.3px}
-.gen-btn:hover{background:var(--primary-hover)}
 .gen-btn[disabled]{opacity:.5;cursor:default}
 .err{font-size:12.5px;color:var(--bad);background:var(--bad-soft);border-radius:9px;padding:8px 10px;margin-top:10px}
 
@@ -266,31 +260,111 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--bg);
   padding:10px 16px;border-radius:10px;font-size:13px;box-shadow:var(--shadow);z-index:60}
 
-@media (max-width:1520px){
-  .grid,.grid.six{grid-template-columns:repeat(3,minmax(0,1fr))}
+/* ================================================================
+   RESPONSIVE: phone (portrait+landscape) / tablet rail / mid / wide
+   Order: hover-capable devices, coarse pointer targets, then
+   breakpoints small to large. Supersedes old 1520/1180/860 queries.
+   ================================================================ */
+
+/* hover-only styling, skipped on touch so nothing gets stuck "hovered" */
+@media (hover:hover){
+  .nav-item:hover{background:var(--sidebar-hover)}
+  .rail-nav:hover{background:var(--surface-2);color:var(--ink)}
+  .wk-pill:hover{border-color:var(--primary)}
+  .wk-row:hover{border-color:var(--primary)}
+  .m-tile:hover{border-color:var(--primary)}
+  .nav-btns button:hover{background:var(--surface-2)}
+  .ov-head .nav-btns button:hover{background:var(--surface-2)}
+  .why-toggle:hover{color:var(--ink);background:var(--surface-2)}
+  .icon-btn:hover{color:var(--ink);border-color:var(--primary)}
+  .gen-btn:hover{background:var(--primary-hover)}
 }
-@media (max-width:1180px){
-  .grid,.grid.six{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .ref-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .m-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* touch: guarantee 44px hit areas without inflating visuals */
+@media (pointer:coarse){
+  .nav-item{min-height:44px}
+  .rail-nav{min-width:44px;min-height:44px}
+  .nav-btns button{min-height:44px;min-width:40px}
+  .icon-btn,.status{min-height:40px}
+  .gen-btn{min-height:44px}
+  .why-toggle{min-height:36px}
 }
-@media (max-width:860px){
-  .shell{flex-direction:column}
-  .sidebar{width:100%;flex:0 0 auto;position:sticky;top:0;height:auto;
-    flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px 12px;gap:8px 16px;z-index:20}
-  .logo{padding:0;font-size:22px}
-  .nav{flex-direction:row;flex-wrap:wrap;padding:0;gap:6px;flex:1 1 auto}
-  .nav-item{width:auto;padding:7px 10px;border-left:0;border-bottom:3px solid transparent}
-  .nav-item[aria-selected="true"]{border-left-color:transparent;border-bottom-color:var(--accent)}
-  .main{padding:16px 16px 32px;width:100%}
-  .ro-note{width:100%;padding:4px 0 0;font-size:11px}
+
+/* phone <=743 wide, or any landscape phone <=500 tall: bottom tab bar */
+@media (max-width:743px), (orientation:landscape) and (max-height:500px){
+  .shell{display:block}
+  .sidebar{position:fixed;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;
+    flex-direction:row;padding:0;padding-bottom:env(safe-area-inset-bottom);
+    z-index:40;box-shadow:0 -1px 0 var(--line-soft)}
+  .logo{display:none}
+  .nav{flex-direction:row;width:100%;padding:0;gap:0}
+  .nav-item{flex:1 1 0;flex-direction:column;justify-content:center;gap:2px;
+    min-height:56px;padding:6px 4px;border-left:0;border-radius:0;font-size:10.5px;text-align:center}
+  .nav-item{color:rgba(255,255,255,.62);position:relative}
+  .nav-item[aria-selected="true"]{background:transparent;border-left-color:transparent;color:#fff}
+  .nav-item[aria-selected="true"]::before{content:"";position:absolute;top:0;left:30%;right:30%;
+    height:3px;border-radius:0 0 3px 3px;background:var(--accent)}
+  .ro-note{display:none}
+  .ro-note.head{display:block}
+  .main{padding:16px 16px calc(56px + env(safe-area-inset-bottom) + 24px);width:100%}
+  .top-stats{width:100%;gap:14px;font-size:11px}
   .wh-side{width:100%}
+  .toast{bottom:calc(56px + env(safe-area-inset-bottom) + 14px)}
   .grid,.grid.six{grid-template-columns:minmax(0,1fr)}
-  .m-tiles{grid-template-columns:1fr}
+  .m-tiles{grid-template-columns:minmax(0,1fr)}
   .wk-row{grid-template-columns:1fr;gap:7px}
   .wk-row .mk{justify-content:flex-start}
   .detail{grid-template-columns:1fr;gap:18px}
   .ref-grid{grid-template-columns:1fr}
+}
+
+/* phone landscape only: 2 columns instead of 1 */
+@media (orientation:landscape) and (max-height:500px){
+  .grid,.grid.six{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .m-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* iPad portrait / narrow window, 744-1099: slim icon rail (not landscape phones, they keep the tab bar) */
+@media (min-width:744px) and (max-width:1099px) and (min-height:501px){
+  .sidebar{width:72px;flex:0 0 72px}
+  .logo{font-size:0;text-align:center;padding:16px 0 10px}
+  .logo::before{content:"EC";font-size:22px;letter-spacing:1px}
+  .nav{flex-direction:column;padding:8px 6px;gap:4px}
+  .nav-item{flex-direction:column;justify-content:center;padding:10px 4px;border-left:0;position:relative;gap:4px}
+  .nav-item[aria-selected="true"]{border-left-color:transparent}
+  .nav-item[aria-selected="true"]::before{content:"";position:absolute;left:0;top:6px;bottom:6px;
+    width:3px;border-radius:0 3px 3px 0;background:var(--accent)}
+  .nav-item .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .ro-note{display:none}
+  .ro-note.head{display:block}
+  .main{padding:22px 22px 36px}
+  .grid,.grid.six{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .m-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ref-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* 1100-1699, iPad landscape / MacBook Air-Pro14: full sidebar, 3 up cards */
+@media (min-width:1100px) and (max-width:1699px){
+  .grid,.grid.six{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* >=1700, MBP16/iMac/Studio Display: full sidebar, one row of cards, centered column */
+@media (min-width:1700px){
+  .main{max-width:1880px;margin-inline:auto}
+}
+
+/* 1700-2199: six cards share about 230px each, so tighten card chrome to keep footers on one line */
+@media (min-width:1700px) and (max-width:2199px){
+  .grid{gap:12px}
+  .card-top{padding:10px 12px 0;gap:4px 6px}
+  .card-body{padding:8px 12px 10px}
+  .fmt,.flagship{letter-spacing:.6px;padding-inline:6px}
+  .flagship{padding-inline:0}
+  .card-foot{padding:8px 10px;gap:4px}
+  .status{padding:3px 7px;letter-spacing:.6px}
+  .icon-btn{padding:4px 7px;gap:4px;font-size:11.5px}
+  .icon-btn svg{width:12px;height:12px}
 }
 </style>
 </head>
@@ -300,9 +374,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <aside class="sidebar">
     <div class="logo">Empty Chairs</div>
     <nav class="nav zoom" role="tablist" aria-label="Zoom level">
-      <button class="nav-item" data-view="quarter" role="tab"><span class="nav-icon">&#9633;</span><span>Quarter</span></button>
-      <button class="nav-item" data-view="month" role="tab"><span class="nav-icon">&#9632;</span><span>Month</span></button>
-      <button class="nav-item" data-view="week" role="tab"><span class="nav-icon">&#9679;</span><span>Week</span></button>
+      <button class="nav-item" data-view="quarter" role="tab" title="Quarter"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></span><span class="sr-only">Quarter</span></button>
+      <button class="nav-item" data-view="month" role="tab" title="Month"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg></span><span class="sr-only">Month</span></button>
+      <button class="nav-item" data-view="week" role="tab" title="Week"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><line x1="3" y1="4" x2="3" y2="20"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/><line x1="21" y1="4" x2="21" y2="20"/></svg></span><span class="sr-only">Week</span></button>
     </nav>
     <p class="ro-note">Read only preview. Edits reset on reload.</p>
   </aside>
@@ -311,6 +385,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <header class="main-head">
       <h1 class="tab-title" id="tabTitle">Week</h1>
     </header>
+    <p class="ro-note head">Read only preview. Edits reset on reload.</p>
 
     <div class="rail-wrap" id="railWrap">
       <button class="rail-nav" id="railPrev" aria-label="Earlier weeks">&#8249;</button>
@@ -1055,10 +1130,15 @@ function weekProgress(week){
 }
 
 /* ---------- week rail, paged, never scrolled ---------- */
+function isPhoneViewport(){
+  return window.matchMedia("(max-width:743px), (orientation:landscape) and (max-height:500px)").matches;
+}
 function railPerPage(){
   var w = rail.clientWidth;
   if (!w) w = Math.min(1392, (document.documentElement.clientWidth || 1200) - 200 - 56) - 80;
-  return Math.max(3, Math.min(WEEKS.length, Math.floor(w / 118)));
+  var gap = 8, minPill = isPhoneViewport() ? 96 : 120;
+  var count = Math.floor((w + gap) / (minPill + gap));
+  return Math.max(3, Math.min(WEEKS.length, 12, count));
 }
 
 function renderRail(){
@@ -1343,11 +1423,13 @@ grid.addEventListener("change", function(ev){
 });
 
 var railTimer = null;
-window.addEventListener("resize", function(){
+function scheduleRailRerender(){
   if (state.view !== "week") return;
   clearTimeout(railTimer);
-  railTimer = setTimeout(renderRail, 140);
-});
+  railTimer = setTimeout(renderRail, 120);
+}
+window.addEventListener("resize", scheduleRailRerender);
+window.addEventListener("orientationchange", scheduleRailRerender);
 
 document.addEventListener("keydown", function(ev){
   if (ev.target.tagName === "TEXTAREA" || ev.target.tagName === "INPUT" || ev.metaKey || ev.ctrlKey) return;
