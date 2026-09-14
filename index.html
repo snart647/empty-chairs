@@ -1,0 +1,1385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Empty Chairs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Raleway:wght@400;500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#F8F8F8; --surface:#FFFFFF; --surface-2:#F1F3F3; --ink:#313337; --ink-muted:#5F6167;
+  --line:#DFE5E5; --line-soft:#EAEEEE;
+  --primary:#445E5E; --primary-hover:#597C7C; --primary-ink:#FFFFFF; --primary-soft:#E4EAEA;
+  --accent:#B1CACC; --accent-soft:#B1CCC1;
+  --ok:#3E7C5A; --ok-soft:#E1EFE7;
+  --warn:#B8862B; --warn-soft:#F5EAD6;
+  --bad:#B54A4A; --bad-soft:#F5E1E1;
+  --sidebar-bg:#445E5E; --sidebar-hover:#597C7C;
+  --radius:8px; --sidebar-w:200px;
+  --shadow:0 1px 2px rgba(49,51,55,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1615; --surface:#16201F; --surface-2:#1B2625; --ink:#E7EEEC; --ink-muted:#95A6A3;
+    --line:#2A3736; --line-soft:#22302E;
+    --primary:#7FA3A2; --primary-hover:#9CBDBC; --primary-ink:#0E1615; --primary-soft:#1F2C2B;
+    --accent:#B1CACC; --accent-soft:#3A4E4C;
+    --ok:#7FC79C; --ok-soft:#193226;
+    --warn:#DCB35F; --warn-soft:#2E2716;
+    --bad:#E58A8A; --bad-soft:#301F1F;
+    --sidebar-bg:#0F1F1D; --sidebar-hover:#1E3230;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.28);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1615; --surface:#16201F; --surface-2:#1B2625; --ink:#E7EEEC; --ink-muted:#95A6A3;
+  --line:#2A3736; --line-soft:#22302E;
+  --primary:#7FA3A2; --primary-hover:#9CBDBC; --primary-ink:#0E1615; --primary-soft:#1F2C2B;
+  --accent:#B1CACC; --accent-soft:#3A4E4C;
+  --ok:#7FC79C; --ok-soft:#193226;
+  --warn:#DCB35F; --warn-soft:#2E2716;
+  --bad:#E58A8A; --bad-soft:#301F1F;
+  --sidebar-bg:#0F1F1D; --sidebar-hover:#1E3230;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Raleway","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.55}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:6px}
+.num{font-variant-numeric:tabular-nums}
+
+/* shell */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);flex:0 0 var(--sidebar-w);background:var(--sidebar-bg);color:#fff;
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.logo{font-family:"Bebas Neue",Impact,sans-serif;font-size:28px;letter-spacing:1px;
+  text-transform:uppercase;padding:20px 20px 12px}
+.nav{display:flex;flex-direction:column;gap:2px;padding:8px 10px}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:transparent;
+  color:#fff;border:0;border-left:3px solid transparent;border-radius:6px;padding:10px 12px;
+  cursor:pointer;font-size:14px}
+.nav-item:hover{background:var(--sidebar-hover)}
+.nav-item[aria-selected="true"]{background:var(--sidebar-hover);border-left-color:var(--accent);font-weight:700}
+.nav-icon{width:18px;text-align:center;opacity:.85;font-size:11px}
+.ro-note{font-size:12px;color:rgba(255,255,255,.7);padding:12px 20px;margin:0}
+.main{flex:1;min-width:0;padding:24px 28px 40px}
+.main-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.tab-title{font-family:"Bebas Neue",Impact,sans-serif;font-size:34px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--ink);line-height:1}
+.top-stats{display:flex;gap:22px;font-size:12px;color:var(--ink-muted)}
+.top-stats b{display:block;font-size:17px;color:var(--ink);font-weight:700;letter-spacing:.2px}
+
+/* week rail, paged, never scrolled */
+.rail-wrap{display:flex;align-items:stretch;gap:8px;margin-bottom:18px}
+.rail-wrap[hidden]{display:none}
+.rail{display:flex;gap:8px;flex:1;min-width:0}
+.rail-nav{flex:0 0 auto;width:32px;border:1px solid var(--line);border-radius:8px;
+  color:var(--ink-muted);font-size:15px;line-height:1;background:var(--surface)}
+.rail-nav:hover{background:var(--surface-2);color:var(--ink)}
+.rail-nav[disabled]{opacity:.35;cursor:default}
+.wk-pill{flex:1 1 0;min-width:0;text-align:left;padding:9px 12px 10px;border-radius:8px;
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);position:relative;
+  transition:background .15s,border-color .15s}
+.wk-pill:hover{border-color:var(--primary)}
+.wk-pill[aria-current="true"]{background:var(--primary);border-color:var(--primary)}
+.wk-pill .id{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink)}
+.wk-pill .dts{font-size:11px;color:var(--ink-muted);margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-pill[aria-current="true"] .id{color:#fff}
+.wk-pill[aria-current="true"] .dts{color:rgba(255,255,255,.75)}
+.wk-pill .stripe{position:absolute;left:12px;right:12px;top:0;height:3px;border-radius:0 0 3px 3px}
+.wk-pill .prog{margin-top:7px;height:3px;border-radius:2px;background:var(--line-soft);overflow:hidden}
+.wk-pill .prog i{display:block;height:100%;background:var(--accent)}
+.st-hot{background:var(--bad)} .st-warm{background:var(--warn)} .st-cool{background:var(--ok)} .st-seed{background:var(--primary)}
+
+/* week header, light OS card */
+.week-head{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:16px 18px;margin-bottom:18px}
+.wh-row{display:flex;align-items:center;gap:16px 20px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border-radius:999px;
+  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.chip.hot{background:var(--bad);color:#fff}
+.chip.warm{background:var(--warn);color:#fff}
+.chip.cool{background:var(--ok);color:#fff}
+.chip.seed{background:var(--primary);color:#fff}
+.th-pair{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 340px}
+.th-row{display:flex;align-items:baseline;gap:9px;min-width:0}
+.th-key{font-size:9.5px;font-weight:800;letter-spacing:1.2px;color:var(--ink);background:var(--accent-soft);
+  border-radius:4px;padding:1px 5px;flex:0 0 auto}
+.th-key.b{background:var(--line);color:var(--ink-muted)}
+.th-in{font:inherit;background:none;border:0;color:var(--ink);padding:2px 0;width:100%;
+  min-width:0;border-bottom:1px dashed transparent}
+.th-in:hover{border-bottom-color:var(--line)}
+.th-in.a{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(25px,3vw,33px);
+  letter-spacing:.5px;line-height:1.06}
+.th-in.b{font-size:13.5px;color:var(--ink-muted);letter-spacing:.2px}
+.wh-side{display:flex;align-items:center;gap:10px;margin-left:auto;flex-wrap:wrap}
+.nav-btns{display:flex;gap:6px}
+.nav-btns button{border:1px solid var(--line);border-radius:6px;padding:5px 10px;font-size:12px;
+  color:var(--ink);letter-spacing:.3px}
+.nav-btns button:hover{background:var(--surface-2)}
+.nav-btns button[disabled]{opacity:.35;cursor:default}
+.why-toggle{font-size:11.5px;color:var(--ink-muted);border:1px solid var(--line);border-radius:6px;
+  padding:4px 9px;letter-spacing:.3px}
+.why-toggle:hover{color:var(--ink);background:var(--surface-2)}
+.wh-why{margin:12px 0 0;max-width:78ch;font-size:13.5px;color:var(--ink-muted)}
+.wh-why b{color:var(--ink)}
+.wh-why[hidden]{display:none}
+
+/* overviews */
+.ov{padding:0}
+.ov[hidden]{display:none}
+.ov-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+.ov-head h2{font-family:"Bebas Neue",Impact,sans-serif;font-size:32px;letter-spacing:1px;margin:0;line-height:1;color:var(--ink)}
+.ov-head .nav-btns{margin-left:auto}
+.ov-head .nav-btns button{border-color:var(--line);color:var(--ink)}
+.ov-head .nav-btns button:hover{background:var(--surface-2)}
+.ov-theme{font-size:17px;font-weight:700;margin:0 0 6px;color:var(--ink)}
+.ov-lede{margin:0 0 20px;font-size:14px;color:var(--ink-muted);max-width:68ch}
+.wk-rows{display:grid;gap:10px}
+.wk-row{display:grid;grid-template-columns:84px minmax(0,1.1fr) minmax(0,1fr) 104px;gap:18px;
+  align-items:center;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.wk-row:hover{border-color:var(--primary)}
+.wk-row .wn{font-family:"Bebas Neue",Impact,sans-serif;font-size:22px;letter-spacing:.6px;line-height:1;color:var(--ink)}
+.wk-row .wd{font-size:11px;color:var(--ink-muted);letter-spacing:.3px;margin-top:2px}
+.wk-row .ta{font-size:15.5px;font-weight:700;line-height:1.3;color:var(--ink)}
+.wk-row .tb{font-size:13.5px;color:var(--ink-muted);line-height:1.35}
+.wk-row .mk{font-size:10.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--ok);
+  display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.wk-row .mk i{width:7px;height:7px;border-radius:50%;background:var(--ok);display:block;flex:0 0 auto}
+.q-block{margin-bottom:36px}
+.q-title{font-family:"Bebas Neue",Impact,sans-serif;font-size:36px;letter-spacing:1px;margin:0 0 4px;line-height:1;color:var(--ink)}
+.m-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.m-tile{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:7px}
+.m-tile:hover{border-color:var(--primary)}
+.m-tile .mn{font-family:"Bebas Neue",Impact,sans-serif;font-size:25px;letter-spacing:.8px;line-height:1;
+  border-top:3px solid var(--accent);padding-top:12px;color:var(--ink)}
+.m-tile .mt{font-size:15.5px;font-weight:700;line-height:1.32;color:var(--ink)}
+.m-tile .mw{font-size:11.5px;color:var(--ink-muted);letter-spacing:.3px;margin-top:auto;padding-top:4px}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.thpill{font-size:10px;font-weight:800;letter-spacing:.4px;border-radius:5px;padding:2px 6px;
+  background:var(--primary-soft);color:var(--primary);max-width:100%;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.thpill.b{background:var(--surface-2);color:var(--ink-muted);border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;align-items:start;padding:0}
+#wView[hidden]{display:none}
+.grid.six{grid-template-columns:repeat(6,minmax(0,1fr))}
+
+/* card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+.card.is-open{grid-column:1/-1}
+.card-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:12px 14px 0}
+.day{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink)}
+.time{font-size:11.5px;color:var(--ink-muted);letter-spacing:.4px}
+.fmt{margin-left:auto;font-size:10.5px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;
+  padding:3px 8px;border-radius:6px;background:var(--primary-soft);color:var(--primary)}
+.fmt.reel{background:var(--warn-soft);color:var(--warn)}
+.fmt.photo{background:var(--bad-soft);color:var(--bad)}
+.fmt.question{background:var(--ok-soft);color:var(--ok)}
+.fmt.story{background:var(--primary-soft);color:var(--primary)}
+.flagship{font-size:10.5px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--bad)}
+.card.brand{border-color:var(--accent)}
+.lane{font-size:10px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink-muted)}
+.lane.b{color:var(--primary)}
+.info{display:flex;gap:7px;font-size:12px;background:var(--primary-soft);color:var(--primary);
+  border-radius:9px;padding:7px 9px;line-height:1.4}
+.check{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px;font-size:13.5px}
+.check li{display:grid;grid-template-columns:16px 1fr;gap:9px;align-items:baseline;color:var(--ink-muted)}
+.check li::before{content:"";width:9px;height:9px;border:1.5px solid var(--accent);border-radius:3px;
+  display:block;transform:translateY(1px)}
+.slot-in{width:100%;font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:6px}
+.quote{font-size:15px;line-height:1.5;border-left:3px solid var(--accent);padding-left:12px;margin:0;color:var(--ink)}
+.card-body{padding:10px 14px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
+.hook{font-size:16.5px;line-height:1.3;font-weight:700;margin:0;text-wrap:pretty;color:var(--ink)}
+.card.is-open .hook{font-size:22px;max-width:24ch}
+.why{margin:0;font-size:12.5px;color:var(--ink-muted)}
+.warn{display:flex;gap:7px;font-size:12px;background:var(--warn-soft);color:var(--warn);
+  border-radius:9px;padding:7px 9px;line-height:1.4}
+.warn b{font-weight:800}
+.card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid var(--line-soft);
+  background:var(--surface-2)}
+.status{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;
+  border-radius:999px;border:1px solid var(--line);color:var(--ink-muted)}
+.status[data-s="approved"]{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.status[data-s="posted"]{background:var(--primary);color:var(--primary-ink);border-color:transparent}
+.icon-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
+  color:var(--ink-muted);border:1px solid var(--line);border-radius:6px;padding:5px 9px;white-space:nowrap}
+.icon-btn:hover{color:var(--ink);border-color:var(--primary)}
+.icon-btn+.icon-btn{margin-left:0}
+.icon-btn[disabled]{opacity:.45;cursor:default}
+.icon-btn svg{width:14px;height:14px}
+.spin{animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}}
+
+/* expanded detail */
+.detail{border-top:1px solid var(--line-soft);padding:16px 14px 18px;
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:26px}
+.detail h4{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-muted);margin:0 0 8px;font-weight:800}
+.caption{white-space:pre-wrap;font-size:14px;line-height:1.62;margin:0;color:var(--ink)}
+.panels{list-style:none;margin:0;padding:0;display:grid;gap:6px;counter-reset:p}
+.panels li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:13.5px;align-items:baseline;color:var(--ink)}
+.panels li::before{counter-increment:p;content:counter(p);font-family:"Bebas Neue",Impact,sans-serif;
+  font-size:15px;color:var(--accent);letter-spacing:.5px}
+.meta-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-size:12px;color:var(--primary);background:var(--primary-soft);border-radius:6px;padding:3px 8px}
+.cta-box{margin-top:14px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;font-size:13.5px;color:var(--ink)}
+.note{width:100%;min-height:64px;resize:vertical;font:inherit;font-size:13.5px;color:var(--ink);
+  background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:6px}
+.fmt-picker{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.fmt-picker button{font-size:11.5px;font-weight:700;letter-spacing:.6px;border:1px solid var(--line);
+  border-radius:6px;padding:4px 9px;color:var(--ink-muted)}
+.fmt-picker button[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.hist{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12.5px;color:var(--ink-muted)}
+.hist button{border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:12px}
+.hist button[disabled]{opacity:.4;cursor:default}
+.empty-detail{font-size:13.5px;color:var(--ink-muted);max-width:52ch}
+.gen-btn{margin-top:10px;background:var(--primary);color:var(--primary-ink);border-radius:6px;
+  padding:8px 14px;font-size:13px;font-weight:700;letter-spacing:.3px}
+.gen-btn:hover{background:var(--primary-hover)}
+.gen-btn[disabled]{opacity:.5;cursor:default}
+.err{font-size:12.5px;color:var(--bad);background:var(--bad-soft);border-radius:9px;padding:8px 10px;margin-top:10px}
+
+/* reference, OS card + brief-details style summary */
+.ref{margin:24px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:16px 18px}
+.ref summary{cursor:pointer;font-family:"Bebas Neue",Impact,sans-serif;font-size:20px;letter-spacing:1px;
+  text-transform:uppercase;list-style:none;display:flex;align-items:center;gap:10px;color:var(--ink)}
+.ref summary::-webkit-details-marker{display:none}
+.ref summary::after{content:"+";font-family:"Raleway",sans-serif;font-size:18px;color:var(--ink-muted)}
+.ref[open] summary::after{content:"\2212"}
+.ref-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin-top:20px}
+.ref-grid h5{font-family:"Bebas Neue",Impact,sans-serif;font-size:20px;letter-spacing:.8px;margin:0 0 6px;
+  border-top:3px solid var(--accent);padding-top:10px;color:var(--ink)}
+.ref-grid p{margin:0;font-size:13px;color:var(--ink-muted)}
+.ref-grid em{font-style:normal;font-weight:700;color:var(--ink)}
+.ref-foot{margin-top:22px;font-size:12.5px;color:var(--ink-muted);display:flex;gap:24px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:var(--bg);
+  padding:10px 16px;border-radius:10px;font-size:13px;box-shadow:var(--shadow);z-index:60}
+
+@media (max-width:1520px){
+  .grid,.grid.six{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:1180px){
+  .grid,.grid.six{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ref-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .m-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:860px){
+  .shell{flex-direction:column}
+  .sidebar{width:100%;flex:0 0 auto;position:sticky;top:0;height:auto;
+    flex-direction:row;flex-wrap:wrap;align-items:center;padding:10px 12px;gap:8px 16px;z-index:20}
+  .logo{padding:0;font-size:22px}
+  .nav{flex-direction:row;flex-wrap:wrap;padding:0;gap:6px;flex:1 1 auto}
+  .nav-item{width:auto;padding:7px 10px;border-left:0;border-bottom:3px solid transparent}
+  .nav-item[aria-selected="true"]{border-left-color:transparent;border-bottom-color:var(--accent)}
+  .main{padding:16px 16px 32px;width:100%}
+  .ro-note{width:100%;padding:4px 0 0;font-size:11px}
+  .wh-side{width:100%}
+  .grid,.grid.six{grid-template-columns:minmax(0,1fr)}
+  .m-tiles{grid-template-columns:1fr}
+  .wk-row{grid-template-columns:1fr;gap:7px}
+  .wk-row .mk{justify-content:flex-start}
+  .detail{grid-template-columns:1fr;gap:18px}
+  .ref-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="logo">Empty Chairs</div>
+    <nav class="nav zoom" role="tablist" aria-label="Zoom level">
+      <button class="nav-item" data-view="quarter" role="tab"><span class="nav-icon">&#9633;</span><span>Quarter</span></button>
+      <button class="nav-item" data-view="month" role="tab"><span class="nav-icon">&#9632;</span><span>Month</span></button>
+      <button class="nav-item" data-view="week" role="tab"><span class="nav-icon">&#9679;</span><span>Week</span></button>
+    </nav>
+    <p class="ro-note">Read only preview. Edits reset on reload.</p>
+  </aside>
+
+  <main class="main">
+    <header class="main-head">
+      <h1 class="tab-title" id="tabTitle">Week</h1>
+    </header>
+
+    <div class="rail-wrap" id="railWrap">
+      <button class="rail-nav" id="railPrev" aria-label="Earlier weeks">&#8249;</button>
+      <div class="rail" id="rail" role="tablist" aria-label="Weeks"></div>
+      <button class="rail-nav" id="railNext" aria-label="Later weeks">&#8250;</button>
+    </div>
+
+    <div class="week-head" id="weekHead">
+      <div class="wh-row">
+        <div class="th-pair">
+          <div class="th-row"><span class="th-key">A</span>
+            <input class="th-in a" id="th1" aria-label="Primary theme"></div>
+          <div class="th-row"><span class="th-key b">B</span>
+            <input class="th-in b" id="th2" aria-label="Secondary theme"></div>
+        </div>
+        <div class="wh-side">
+          <span class="chip" id="whChip"></span>
+          <button class="why-toggle" id="whyToggle" aria-expanded="false">Why this week</button>
+          <div class="nav-btns">
+            <button id="prevWk" aria-label="Previous week">&#8592;</button>
+            <button id="nextWk" aria-label="Next week">&#8594;</button>
+          </div>
+        </div>
+      </div>
+      <p class="wh-why" id="whWhy" hidden></p>
+    </div>
+
+    <section class="ov" id="qView" hidden></section>
+    <section class="ov" id="mView" hidden></section>
+    <section id="wView">
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <details class="ref">
+    <summary>Why the board looks like this</summary>
+    <div class="ref-grid">
+      <div><h5>Carousels carry it</h5><p>29 carousels produced <em>every one of the 990 followers</em> won this quarter, plus 75 percent of all reach. Four of the five weekly posts are carousels for that reason alone.</p></div>
+      <div><h5>One reel, for reach only</h5><p>Reels reached 98 592 people from 12 posts, then sent <em>zero</em> to the profile. Keep one a week, judge it on views, never blame it for follower growth.</p></div>
+      <div><h5>Thursday 15:00 is flagship</h5><p>11 046 median reach on Thursday against 3 721 on Wednesday, and 15:00 is the strongest hour at <em>13 094</em>. The week's best post goes there, every week.</p></div>
+      <div><h5>Photos are service posts</h5><p>Six photos, two saves, zero followers. They are quotes and testimonials doing a different job. <em>Stop scoring them</em> against the teaching content.</p></div>
+    </div>
+    <div class="ref-grid" style="margin-top:26px">
+      <div><h5>Last call, 0 to 14 days</h5><p>Owns the whole week. Every course post points at this room. After the start date the seat is gone for good.</p></div>
+      <div><h5>Active, 15 to 45 days</h5><p>Gets the flagship carousel. This is where most bookings are actually made.</p></div>
+      <div><h5>Build, 46 to 90 days</h5><p>Gets the monthly theme, not the weekly one. Teach the subject, never mention the date yet.</p></div>
+      <div><h5>Seed, 90 days and beyond</h5><p>Authority content with nothing to sell, so the room feels obvious by the time it opens.</p></div>
+    </div>
+    <div class="ref-grid" style="margin-top:26px">
+      <div><h5>Two lanes, not one</h5><p>Performance posts are judged on reach, saves and followers. Brand posts are judged on whether a stranger believes this is a real company with real rooms. <em>One brand slot a week</em> is the floor, and course recaps come on top of it.</p></div>
+      <div><h5>Recaps are the only proof you film yourself</h5><p>Nine of the twelve weeks contain a course day. The evening after, the room goes out as it looked: faces, movement, laughter. <em>A single group photo counts</em>, and beats a better edit that never ships.</p></div>
+      <div><h5>Reviews come from your routine</h5><p>The proof slot carries the frame, the checklist and the consent questions. <em>The quote itself is pasted in</em>, never written here, because a testimonial nobody said is worth less than no testimonial at all.</p></div>
+      <div><h5>Losing on reach is allowed</h5><p>A brand post that reaches 900 people and makes four of them trust you has done its job. <em>Do not move it to Thursday</em> and do not compare it to a carousel. Different lane, different scoreboard.</p></div>
+    </div>
+    <div class="ref-foot">
+      <span>Seat data from EduAdmin, fetched 31 August 2026. Performance data from Meta Graph API v23.0, snapshot 25 August 2026.</span>
+      <span>Two December dates sit in the source totals without per date detail. They fall outside this 12 week board.</span>
+      <span id="dbState">Local session only.</span>
+    </div>
+  </details>
+  </main>
+</div>
+
+<script>
+"use strict";
+
+/* ---------- seat data ---------- */
+var COURSES = [
+  {id:"c1", name:"Retorik och affärsmannaskap", date:"2026-09-10", city:"Stockholm"},
+  {id:"c2", name:"Tala tryggt", date:"2026-09-15", city:"Stockholm"},
+  {id:"c3", name:"Presentationsteknik", date:"2026-09-23", city:"Stockholm"},
+  {id:"c4", name:"Snacka Snyggt", date:"2026-10-06", city:"Stockholm"},
+  {id:"c5", name:"Framgångsrika samtal", date:"2026-10-13", city:"Stockholm"},
+  {id:"c6", name:"Presentationsteknik", date:"2026-10-20", city:"Stockholm"},
+  {id:"c7", name:"Härskartekniker", date:"2026-10-21", city:"Stockholm"},
+  {id:"c8", name:"Tala tryggt", date:"2026-11-03", city:"Stockholm"},
+  {id:"c9", name:"Presentationsteknik", date:"2026-11-10", city:"Stockholm"},
+  {id:"c10", name:"Snacka Snyggt", date:"2026-11-17", city:"Göteborg"},
+  {id:"c11", name:"Ledarskapsprogrammet", date:"2027-03-16", city:"Stockholm"}
+];
+var COURSE_BY_ID = {};
+COURSES.forEach(function(c){ COURSE_BY_ID[c.id] = c; });
+
+var SLOT_BASE = [
+  {key:"tue", day:"Tue", time:"10:00", format:"Carousel", role:"opener", lane:"performance", theme:1},
+  {key:"wed", day:"Wed", time:"15:00", format:"Carousel", role:"mechanism", lane:"performance", theme:1},
+  {key:"thu", day:"Thu", time:"15:00", format:"Carousel", role:"flagship", lane:"performance", theme:1},
+  {key:"fri", day:"Fri", time:"12:00", format:"Reel", role:"reach", lane:"performance", theme:2},
+  {key:"sun", day:"Sun", time:"18:00", format:"Question", role:"experiment", lane:"brand", theme:2}
+];
+var FORMATS = ["Carousel","Reel","Photo","Story","Question"];
+
+var ROLE_BRIEF = {
+  opener:"Öppnar veckans tema. Undervisar, nämner varken datum eller pris.",
+  mechanism:"Förklarar mekanismen bakom temat. Veckans kortaste inlägg.",
+  flagship:"Veckans starkaste läge. Bär kursdatumet i bildtexten när kursen närmar sig.",
+  reach:"Bara räckvidd. En teknik, visad, inget mer i bild.",
+  experiment:"Säljer ingenting. Mäts i kommentarer, inte räckvidd.",
+  recap:"Kursdagen som just varit. Ansikten, rörelse, stämning. Mäts i förtroende, inte räckvidd.",
+  review:"Recension från en tidigare deltagare. Citatet kommer från din befintliga recensionsrutin."
+};
+var ROLE_LABEL = {opener:"Teach", mechanism:"Mechanism", flagship:"Flagship", reach:"Reach",
+  experiment:"Community", recap:"Recap", review:"Proof"};
+
+/* ---------- weeks ---------- */
+var WEEK_SEEDS = [
+  {n:36, monday:"2026-08-31", lead:"c1", theme:"Retorik och affärsmannaskap", theme2:"Nervositeten före det som räknas",
+   why:"<b>Startar 10 september.</b> Sista veckan rummet går att sälja över huvud taget. Högsta brådskan på tavlan trots kort startsträcka, precis som regeln säger."},
+  {n:37, monday:"2026-09-07", lead:"c2", support:"c1", theme:"Tala tryggt, hantera din nervositet", theme2:"Sista dagarna för Retorik",
+   why:"<b>Startar 15 september.</b> Retorik stänger på torsdagen, så Tala tryggt ärver veckan med samma brådska."},
+  {n:38, monday:"2026-09-14", lead:"c3", theme:"Presentationsteknik", theme2:"Samtalet som avgör hösten",
+   why:"<b>Startar 23 september.</b> Presentationsteknik har också flest öppna kursdatum på tavlan, så veckan öppnar en längre båge."},
+  {n:39, monday:"2026-09-21", lead:"c5", support:"c4", theme:"Snacka Snyggt och samtalet", theme2:"Framgångsrika samtal",
+   why:"<b>Snacka Snyggt 6 oktober. Framgångsrika samtal 13 oktober.</b> Två samtalskurser ligger två veckor isär, så ett tema säljer båda rummen på en gång."},
+  {n:40, monday:"2026-09-28", lead:"c4", support:"c5", theme:"Säg det svåra i tid", theme2:"Samtalet som inte kan vänta",
+   why:"<b>Startar 6 oktober.</b> Sista veckan för Snacka Snyggt i Stockholm. Framgångsrika samtal ligger en vecka bakom och bär samma tema, så ingenting av arbetet går till spillo."},
+  {n:41, monday:"2026-10-05", lead:"c5", theme:"Framgångsrika samtal", theme2:"Härskartekniker, rummet som mest behöver fyllas",
+   why:"<b>Startar 13 oktober.</b> Ett av oktobers viktigaste rum efter Härskartekniker, och det rum som svarar bäst på kontots vanligaste tema."},
+  {n:42, monday:"2026-10-12", lead:"c7", support:"c6", theme:"Härskartekniker", theme2:"Presentationsteknik",
+   why:"<b>Startar 21 oktober.</b> Rummet som mest behöver fyllas i kvartalet och ämnet med starkast dragningskraft socialt. Webbinariesidan finns redan, så skicka trafik dit i stället för till bokningen. Presentationsteknik 20 oktober åker med i samma vecka."},
+  {n:43, monday:"2026-10-19", lead:"c10", support:"c8", theme:"Göteborg börjar här", theme2:"Tala tryggt",
+   why:"<b>Startar 17 november.</b> Enda datumet utanför Stockholm på hela tavlan. En Stockholmspublik fyller det inte, så bygget måste starta nu och inte i november."},
+  {n:44, monday:"2026-10-26", lead:"c8", theme:"Tala tryggt", theme2:"Göteborg, staden som inte känner oss",
+   why:"<b>Startar 3 november.</b> Det är novembers första rum och sista av de tre, så det tar veckan före Presentationsteknik."},
+  {n:45, monday:"2026-11-02", lead:"c9", support:"c10", theme:"Presentationsteknik", theme2:"Göteborg räknar ner",
+   why:"<b>Startar 10 november.</b> Tredje och sista Presentationsteknik på tavlan. Göteborg ligger en vecka bort och får fortsatt utrymme i söndagsfrågan."},
+  {n:46, monday:"2026-11-09", lead:"c10", theme:"Snacka Snyggt i Göteborg", theme2:"Året som stänger",
+   why:"<b>Startar 17 november.</b> Sista veckan för kvartalets viktigaste rum. Varje bokning räknas som vinst här."},
+  {n:47, monday:"2026-11-16", lead:"c11", theme:"Ledarskapet, sälj ingenting", theme2:"Nästa år börjar nu",
+   why:"<b>Inget rum inom räckhåll den här veckan.</b> Ledarskapsprogrammet 16 mars köps inte från en karusell. Såddveckan börjar här, utan datum och utan erbjudande."}
+];
+
+var MONTH_ARC = {
+  "2026-09":{theme:"Rummen som stänger",
+    note:"Tre Stockholmsrum startar den här månaden och tre stänger. Månaden handlar om att sälja det som redan står öppet, inte om att bygga något nytt."},
+  "2026-10":{theme:"Samtalet och rummet som mest behöver fyllas",
+    note:"Fyra kursdagar ligger i oktober. Månaden tillhör samtalet och arbetet med Göteborg börjar här."},
+  "2026-11":{theme:"Göteborg och året som stänger",
+    note:"Årets sista Stockholmsrum och den första kursdagen utanför Stockholm. Efter Göteborg finns inget rum inom räckhåll, så månaden slutar i sådd."}
+};
+
+var QUARTER_ARC = {
+  "2026-Q3":{theme:"Sälj det som redan står öppet",
+    note:"Bara september ligger inom tavlan. Allt som säljs här startar inom fyra veckor, så innehållet får peka på datum och platser."},
+  "2026-Q4":{theme:"Fyll Härskartekniker och öppna en ny stad",
+    note:"Oktober och november bär kvartalets två viktigaste rum: Härskartekniker i Stockholm och Snacka Snyggt i Göteborg. Kvartalet slutar utan rum inom räckhåll och då tar varumärket över."}
+};
+
+/* ---------- seeded copy ---------- */
+function S(hook, why, detail){ return {hook:hook, why:why, detail:detail || null}; }
+
+var SEED = {
+36:[
+ S("Du säljer inte med argument. Du säljer med hur du låter när du säger dem.",
+   "Öppnar temat. Inget datum, inget erbjudande, bara undervisning.",
+   {caption:"Kunden har bestämt sig innan du hunnit till den andra meningen. Inte för att argumentet är svagt, utan för att rösten avslöjar om du själv tror på det.\n\nTre saker som hörs före innehållet: tempot, tonläget, pausen.\n\nVarför det fungerar: hjärnan bedömer trygghet snabbare än den bedömer logik. Den som låter lugn får längre tid på sig att förklara.",
+    panels:["Du säljer inte med argument","Tempo: den som skyndar låter osäker","Tonläge: låt meningen landa nedåt","Paus: tystnad läses som kontroll","Prova en av tre i nästa möte"],
+    cta:"Spara inlägget till nästa kundmöte.", tags:["retorik","affärsmannaskap","kommunikation","snackasnyggt"]}),
+ S("Tre saker kunden hör innan du hunnit säga något.",
+   "Onsdag är veckans svagaste dag i datan, så den bär det lättaste inlägget.",
+   {caption:"Handslaget, blicken, första andetaget. Kunden läser alla tre innan du hunnit presentera dig.\n\nDu kan inte stänga av signalerna. Du kan bara bestämma vad de ska säga.",
+    panels:["Handslaget: fast, inte hårt","Blicken: tre sekunder räcker","Andetaget: ta det före du talar","Alla tre säger samma sak: jag är här"],
+    cta:"Vilken av de tre glömmer du oftast?", tags:["retorik","första intryck","sälj"]}),
+ S("Den som pratar minst äger ofta mötet.",
+   "Veckans bästa läge. Det här inlägget bär kursdatumet i bildtexten.",
+   {caption:"Det finns en person i varje möte som alla lyssnar på. Det är sällan den som pratat mest.\n\nFyra saker den personen gör i stället för att fylla tystnaden.\n\nVarför det fungerar: den som ställer frågan styr riktningen. Den som svarar först tappar den.",
+    panels:["Den som pratar minst äger mötet","Ställ frågan, låt den ligga","Sammanfatta innan du föreslår","Anteckna, det tvingar fram paus","Säg det sista, inte det första","Nästa kurs startar 10 september"],
+    cta:"Retorik och affärsmannaskap, 10 september. Länk i profilen.",
+    tags:["retorik","mötesteknik","affärsmannaskap","kurs"]}),
+ S("En sak att göra trettio sekunder innan du kliver in i mötet.",
+   "Bara räckvidd. Mäts i visningar, aldrig i nya följare.",
+   {caption:"Trettio sekunder i korridoren avgör hur de första två minuterna låter.",
+    panels:["Beat 1: stå still, kamera på dörren","Beat 2: en utandning, axlarna ned","Beat 3: första meningen, lugnt tempo"],
+    cta:"Spara till nästa gång du är sen till ett möte.", tags:["reels","möte","närvaro"]}),
+ S("Vad är det sämsta rådet du fått om att tala inför andra?",
+   "Säljer ingenting. Framgång mäts i kommentarer, inte räckvidd.",
+   {caption:"Vi har hört alla: tänk dig publiken naken, prata långsammare, var bara dig själv.\n\nVad fick du höra som inte hjälpte alls?",
+    panels:[], cta:"Svarar på varje kommentar samma dag.", tags:["retorik","fråga"]})
+],
+37:[
+ S("Nervositet försvinner inte. Den byter plats.",
+   "Omtolkningen som hela kursen vilar på.",
+   {caption:"Kroppen gör samma sak när du är rädd som när du är taggad. Pulsen stiger, andningen blir kortare, händerna blir kalla.\n\nSkillnaden sitter i vad du kallar det.\n\nVarför det fungerar: hjärnan letar efter en förklaring till kroppens signal. Ger du den ordet fara får du fara. Ger du den ordet laddning får du laddning.",
+    panels:["Nervositet försvinner inte","Samma signal, två namn","Rädsla eller laddning, du väljer ordet","Säg det högt före du går upp"],
+    cta:"Spara till nästa gång du ska tala.", tags:["nervositet","talarrädsla","retorik"]}),
+ S("Kroppen larmar innan hjärnan hinner. Så tar du tillbaka den.",
+   "Mekanisminlägg. Hög sparpotential.",
+   {caption:"Larmet går på en tiondels sekund. Tanken kommer flera sekunder senare.\n\nDu hinner alltså aldrig tänka bort nervositeten. Du kan bara svara kroppen på dess eget språk: längre utandning, tyngd i fötterna, lägre axlar.",
+    panels:["Larmet går före tanken","Andas ut längre än du andas in","Tyngden ned i fötterna","Axlarna ned, käken lös","Nu kan du tänka igen"],
+    cta:"Spara. Det tar tolv sekunder.", tags:["nervositet","andning","presentation"]}),
+ S("Fyra saker som händer i kroppen när du ska tala och vad var och en betyder.",
+   "Numrerad undervisande karusell, exakt den form som vann 990 följare i kvartalet.",
+   {caption:"Darrande händer, torr mun, tomt huvud, snabb puls. Fyra signaler, fyra helt vanliga förklaringar.\n\nIngen av dem betyder att du är dålig på att tala.",
+    panels:["Darrande händer: adrenalin, inte svaghet","Torr mun: kroppen prioriterar om","Tomt huvud: arbetsminnet är upptaget","Snabb puls: syre på väg ut","Alla fyra lägger sig på nittio sekunder","Nästa kurs startar 15 september"],
+    cta:"Tala tryggt, 15 september. Länk i profilen.",
+    tags:["talarrädsla","nervositet","kurs","presentation"]}),
+ S("Andningen som lugnar på tolv sekunder.",
+   "En teknik, visad. Inget annat i bild.",
+   {caption:"Fyra in, sex ut, två gånger. Det är hela tekniken.",
+    panels:["Beat 1: räkna in till fyra","Beat 2: ut till sex","Beat 3: en gång till, axlarna ned"],
+    cta:"Testa före nästa möte.", tags:["andning","nervositet","reels"]}),
+ S("När kände du dig senast riktigt trygg när du talade? Vad var annorlunda då?",
+   "Ber om ett minne, vilket är lättare att skriva än en åsikt.",
+   {caption:"De flesta minns sina värsta framträdanden i detalj och sina bästa knappt alls.\n\nTänk efter en gång till. Vad var annorlunda den där gången?",
+    panels:[], cta:"Svarar på varje kommentar samma dag.", tags:["nervositet","fråga"]})
+],
+38:[
+ S("Publiken minns inte din struktur. De minns din första mening.",
+   "Antitesen som bär hela kontot.",
+   {caption:"Du kan bygga en perfekt disposition och ändå tappa rummet på tio sekunder.\n\nFörsta meningen gör ett jobb som ingen slide kan göra: den talar om varför de ska lyssna klart.",
+    panels:["Ingen minns din struktur","Första meningen bestämmer resten","Börja i problemet, inte i agendan","Skriv den, lär dig den, säg den långsamt"],
+    cta:"Spara till nästa presentation.", tags:["presentationsteknik","retorik","struktur"]}),
+ S("Slides är inte presentationen. Du är presentationen.",
+   "Veckans kortaste inlägg, med avsikt.",
+   {caption:"Om presentationen fungerar lika bra utan dig i rummet har du skickat ett dokument, inte hållit ett anförande.",
+    panels:["Slides är inte presentationen","Ta bort en slide","Ta bort en till","Nu börjar det likna något"],
+    cta:"Hur många slides hade din senaste?", tags:["presentationsteknik","slides"]}),
+ S("Sex sätt att öppna en presentation och vad de gör med publiken.",
+   "Sexpanelskarusell. Bär kursdatumet, en dag innan rummet öppnar.",
+   {caption:"Frågan, siffran, berättelsen, påståendet, tystnaden, föremålet.\n\nSex öppningar, sex helt olika rum efter tio sekunder.",
+    panels:["Frågan: gör publiken aktiv","Siffran: gör problemet konkret","Berättelsen: köper dig tid","Påståendet: tvingar fram ställningstagande","Tystnaden: samlar rummet","Föremålet: ger ögat något att hålla i","Nästa kurs startar 23 september"],
+    cta:"Presentationsteknik, 23 september. Länk i profilen.",
+    tags:["presentationsteknik","öppning","kurs","retorik"]}),
+ S("Testa det här nästa gång du får en fråga du inte kan svara på.",
+   "En taktik, under femton sekunder.",
+   {caption:"Fyra ord köper dig hela rummets respekt: det vet jag inte.",
+    panels:["Beat 1: frågan kommer","Beat 2: paus, inget bortförklarande","Beat 3: det vet jag inte, jag återkommer på fredag"],
+    cta:"Spara till nästa frågestund.", tags:["presentationsteknik","frågor","reels"]}),
+ S("Vilken presentation minns du fortfarande? Varför just den?",
+   "Två delar. Andra delen är den som drar fram kommentaren.",
+   {caption:"Det kan vara tio år sedan. Det kan vara en chef, en lärare eller någon på en scen.\n\nVad var det som fastnade?",
+    panels:[], cta:"Svarar på varje kommentar samma dag.", tags:["presentationsteknik","fråga"]})
+],
+39:[
+ S("Det är sällan budskapet som är svårt. Det är stunden du väljer att säga det.",
+   "Karusellen på samma tema den 26 juni vann 221 följare. Samma mark, ny vinkel.",
+   {caption:"De flesta vet vad de borde säga. Det som saknas är tillfället, och tillfället blir aldrig perfekt.\n\nVarför det fungerar: ju längre du väntar desto större blir samtalet i huvudet, och desto mindre likt det samtal som faktiskt behövs.",
+    panels:["Budskapet är sällan problemet","Stunden är problemet","Väntan förstorar allt","Välj en tid, inte en känsla"],
+    cta:"Spara till samtalet du skjuter på.", tags:["samtal","kommunikation","snackasnyggt"]}),
+ S("Samtal går inte sönder av oenighet. De går sönder av tempo.",
+   "Pekar mot Framgångsrika samtal utan att nämna kursen än.",
+   {caption:"Två personer kan tycka helt olika och ändå gå därifrån nöjda. Det som fäller samtalet är när svaret kommer innan meningen är klar.",
+    panels:["Oenighet fäller inga samtal","Tempo gör det","Vänta en hel sekund","Sammanfatta innan du svarar"],
+    cta:"Testa en sekund i nästa samtal.", tags:["samtal","lyssnande","kommunikation"]}),
+ S("Fem meningar som räddar ett samtal som håller på att spåra ur.",
+   "Sparbar av design. Fem paneler, en mening i varje.",
+   {caption:"När rösterna stiger behöver du inte ett bättre argument. Du behöver en mening som sänker tempot.",
+    panels:["Vi vill nog samma sak här","Kan du säga det en gång till","Jag tänkte fel där","Vad behöver du från mig nu","Ska vi ta det här i morgon i stället","Två kurser öppna i oktober"],
+    cta:"Snacka Snyggt 6 oktober och Framgångsrika samtal 13 oktober. Länk i profilen.",
+    tags:["samtal","konflikt","kurs","kommunikation"]}),
+ S("Frågan som gör att den andra personen faktiskt lyssnar.",
+   "Räckviddsspel in i oktoberpushen.",
+   {caption:"Hur ser du på det här? Sex ord, och plötsligt är ni två i samtalet.",
+    panels:["Beat 1: påståendet som inte landar","Beat 2: byt till frågan","Beat 3: tystnad, svaret kommer"],
+    cta:"Spara till nästa gång du fastnar.", tags:["samtal","frågor","reels"]}),
+ S("Vilket samtal skjuter du upp just nu?",
+   "Månadens mest personliga fråga. Räkna med färre men längre svar.",
+   {caption:"Alla har ett. Med en kollega, en chef, en kund eller någon hemma.\n\nDu behöver inte skriva vad det handlar om. Bara hur länge det väntat.",
+    panels:[], cta:"Svarar på varje kommentar samma dag.", tags:["samtal","fråga"]})
+],
+40:[
+ S("Du behöver inte vara vass. Du behöver vara tydlig.",
+   "Öppnar sista veckan för Snacka Snyggt i Stockholm."),
+ S("Det jobbiga samtalet blir inte lättare av att vänta. Det blir bara dyrare.",
+   "Mekanismen bakom hela kursen, i en mening."),
+ S("Tre sätt att säga något obekvämt utan att någon går i försvar.",
+   "Bär kursdatumet. En vecka kvar."),
+ S("Meningen som sänker tonläget på två sekunder.",
+   "En replik, visad i ett verkligt läge."),
+ S("Vad brukar du säga när du egentligen vill säga något helt annat?",
+   "Bjuder in till igenkänning, inte till bekännelse.")
+],
+41:[
+ S("Ett bra samtal handlar inte om att övertyga. Det handlar om att förstå först.",
+   "Antitesen som öppnar Framgångsrika samtal."),
+ S("Du lyssnar inte för att svara. Du lyssnar för att veta vad frågan egentligen var.",
+   "Kort mekanisminlägg om aktivt lyssnande."),
+ S("Fyra frågor som får motparten att börja tänka högt.",
+   "Bär kursdatumet. Startar 13 oktober."),
+ S("Tystnaden efter frågan är där svaret bor.",
+   "En sak, visad. Tystnaden får ta tid i klippet."),
+ S("Vilken fråga önskar du att någon ställt till dig i tid?",
+   "Ber om ett minne. Minnen skrivs lättare än åsikter.")
+],
+42:[
+ S("Härskartekniker handlar sällan om makt. De handlar om osäkerhet.",
+   "Öppnar tavlans tomaste rum med en omtolkning, inte en anklagelse."),
+ S("Osynliggörande känns igen på en sak. Du slutar räkna med att bli hörd.",
+   "En teknik, förklarad. Kortaste inlägget i veckan."),
+ S("Fem härskartekniker och den mening som stoppar var och en.",
+   "Skicka trafiken till webbinariesidan, inte till bokningen."),
+ S("Så svarar du när någon skrattar bort din poäng.",
+   "En replik. Veckans starkaste räckviddsläge socialt."),
+ S("Vilken teknik har du mött men inte haft ord för?",
+   "Ämnet drar kommentarer av sig självt. Modera aktivt samma dag.")
+],
+43:[
+ S("Vi tar Snacka Snyggt till Göteborg. Först en sak vi lärde oss i Stockholm.",
+   "Enda inlägget i veckan som nämner staden rakt ut."),
+ S("Rakt på sak är inte samma sak som hårt. Det är omtanke med kortare väg.",
+   "Bygger begreppet innan rummet nämns igen."),
+ S("Tre saker som skiljer ett bra möte från ett långt möte.",
+   "Brådskan finns inte än, så flaggskeppet undervisar i stället för att sälja."),
+ S("Testa det här i nästa möte som drar över tiden.",
+   "Räckvidd mot en publik som ännu inte följer kontot."),
+ S("Var i landet sitter du och hur låter mötena där?",
+   "Geografisk fråga med ett syfte: hitta Göteborgspubliken i kommentarerna.")
+],
+44:[
+ S("Du är inte rädd för publiken. Du är rädd för tystnaden efter din första mening.",
+   "Öppnar novembers första rum."),
+ S("Handlar det om nerver eller om förberedelse? Oftast det andra.",
+   "Kort mekanism. Hög sparpotential."),
+ S("Fem sätt att börja när rösten skakar.",
+   "Bär kursdatumet. Startar 3 november."),
+ S("Gör det här med händerna innan du kliver upp.",
+   "En teknik, visad i närbild."),
+ S("Vad gör du sista minuten innan du ska tala?",
+   "Låg tröskel. Alla har ett svar på den här.")
+],
+45:[
+ S("En presentation är inte information. Den är ett beslut du vill att någon ska fatta.",
+   "Öppnar tavlans sista Presentationsteknik."),
+ S("Ta bort en slide. Sedan en till. Nu börjar det likna en presentation.",
+   "Veckans kortaste inlägg."),
+ S("Fyra sätt att avsluta så att rummet gör något efteråt.",
+   "Bär kursdatumet. Startar 10 november."),
+ S("Sista meningen är den enda de citerar.",
+   "En poäng, ett klipp."),
+ S("Vilken presentation önskar du att du fick göra om?",
+   "Göteborg nämns i svaren, inte i frågan.")
+],
+46:[
+ S("Göteborg, den sjuttonde november. Först det viktigaste vi vet om svåra samtal.",
+   "Sista veckan för kvartalets viktigaste rum. Staden först i meningen."),
+ S("Att snacka snyggt är inte att vara trevlig. Det är att vara ärlig utan att någon förlorar ansiktet.",
+   "Definierar löftet för en publik som aldrig hört det förr."),
+ S("Sex situationer där rätt mening räddar hela relationen.",
+   "Bär kursdatumet. Startar 17 november."),
+ S("En dag i Göteborg. Så ser den ut.",
+   "Räckvidd mot en ny stad. Visa rummet, inte talaren."),
+ S("Vad hade du velat kunna säga på jobbet i förra veckan?",
+   "Sista chansen att fylla rummet via kommentarerna.")
+],
+47:[
+ S("Ledarskap syns sällan i det du säger på scen. Det syns i det du säger i korridoren.",
+   "Såddvecka. Inget datum, inget erbjudande, ingen länk."),
+ S("Den som leder möten leder företaget. Ingen sätter det på ett cv.",
+   "Bygger auktoritet i ledarskapsspråket."),
+ S("Tre samtal varje ledare skjuter upp för länge.",
+   "Flaggskepp utan platssiffra. Ledarskapsprogrammet nämns tidigast i januari."),
+ S("Frågan som gör ett medarbetarsamtal användbart.",
+   "Räckvidd mot chefer, inte mot befintliga följare."),
+ S("Vad var det bästa en chef någonsin sagt till dig?",
+   "Positiv inramning drar längre svar från en ny publik.")
+]
+};
+
+/* recap, one per week that has a course day */
+var RECAP = {
+37:S("Så lät rummet i dag på Retorik och affärsmannaskap.",
+  "Kursdagen den 10 september. Filma på plats, publicera kvällen efter.",
+  {caption:"Elva timmar tidigare kunde ingen i rummet varandras namn. Nu står de och testar sina öppningar på varandra.\n\nDet här är det enda innehåll vi gör som inte går att skriva i förväg.\n\n[En sak någon sa i rummet i dag.]",
+   panels:["Klipp 1: rummet innan någon kommit, tomma stolar","Klipp 2: två deltagare mitt i en övning","Klipp 3: skratt vid fikabordet","Klipp 4: någon som håller sitt sista anförande","Reserv: en gruppbild på hela gruppen och två meningar i bildtexten"],
+   cta:"Nästa gång vi kör den här dagen hittar du i länken i profilen.",
+   tags:["retorik","kursdag","snackasnyggt"]}),
+38:S("Deltagarna som var nervösa i morse.",
+  "Kursdagen den 15 september. Fånga skillnaden mellan morgon och eftermiddag.",
+  {caption:"Alla som kliver in på Tala tryggt säger samma sak i dörren: jag är nog den enda här som är riktigt nervös.\n\nSedan säger nästa person exakt likadant.\n\n[En sak någon vågade göra i dag som de inte trodde att de skulle våga.]",
+   panels:["Klipp 1: händer som skakar lätt före första övningen","Klipp 2: samma person efter lunch, stadig","Klipp 3: applåder från gruppen","Reserv: en gruppbild och meningen om att alla trodde att de var ensamma om nerverna"],
+   cta:"Nästa datum finns i länken i profilen.",
+   tags:["talarrädsla","kursdag","snackasnyggt"]}),
+39:S("Dagens sista övning på Presentationsteknik, utan manus.",
+  "Kursdagen den 23 september. Slutövningen är alltid det bästa materialet.",
+  {caption:"Vi tar bort manus, slides och anteckningar. Kvar blir tre minuter och en person som faktiskt vet vad hen pratar om.\n\nDet är då rummet blir tyst på det där bra sättet.\n\n[Något som förvånade oss i dag.]",
+   panels:["Klipp 1: någon som lägger ifrån sig sina papper","Klipp 2: första meningen, rakt in i ämnet","Klipp 3: publiken som lyssnar","Reserv: en gruppbild efter slutövningen"],
+   cta:"Nästa Presentationsteknik finns i länken i profilen.",
+   tags:["presentationsteknik","kursdag","snackasnyggt"]}),
+41:S("En hel dag på att säga det som är svårt.",
+  "Kursdagen den 6 oktober. Snacka Snyggt är kursen folk är mest nyfikna på, så visa rummet.",
+  {caption:"Ingen kommer hit för att lära sig prata mer. De kommer hit för att äntligen säga det de burit på i månader.\n\nOch de säger det i dag, till en främling, i en övning, tills det låter som de menar det.\n\n[Ett ögonblick från dagen.]",
+   panels:["Klipp 1: två personer mitt emot varandra i en övning","Klipp 2: någon som tvekar och sedan säger det","Klipp 3: lättnaden efteråt","Klipp 4: gruppen på väg ut, fortfarande i samtal","Reserv: en gruppbild och en mening om vad dagen handlade om"],
+   cta:"Fler datum finns i länken i profilen.",
+   tags:["snackasnyggt","kursdag","samtal"]}),
+42:S("En liten grupp, en dag och samtal som faktiskt leder någonstans.",
+  "Kursdagen den 13 oktober. Liten grupp, så filma nära.",
+  {caption:"En liten grupp betyder att alla får öva på riktigt, inte titta på när någon annan gör det.\n\nDet är hela poängen med att hålla rummen små.\n\n[En insikt från dagen.]",
+   panels:["Klipp 1: bordet med gruppen samlad runt","Klipp 2: en övning i par","Klipp 3: anteckningsblocket som fylls","Reserv: en gruppbild på hela gruppen"],
+   cta:"Nästa tillfälle finns i länken i profilen.",
+   tags:["samtal","kursdag","snackasnyggt"]}),
+43:S("Två kursdagar på rad, två helt olika rum.",
+  "Kursdagarna den 20 och 21 oktober. Filma båda, publicera som ett inlägg.",
+  {caption:"På tisdagen övade vi på att bli lyssnade på. På onsdagen övade vi på vad man gör när någon ser till att man inte blir det.\n\nSamma vecka, samma lokal, två helt olika sorters tystnad i rummet.\n\n[En sak som sades båda dagarna.]",
+   panels:["Klipp 1: tisdagens rum, presentationer","Klipp 2: onsdagens rum, rollspel","Klipp 3: en deltagare som testar en replik","Klipp 4: båda grupperna, samma plats, olika dagar","Reserv: två gruppbilder bredvid varandra"],
+   cta:"Båda kurserna går igen. Länk i profilen.",
+   tags:["harskartekniker","presentationsteknik","kursdag"]}),
+45:S("Rösten skakade i morse. Nu gör den inte det.",
+  "Kursdagen den 3 november. Samma båge som i september, ny grupp.",
+  {caption:"Det syns tydligast på axlarna. De sitter uppe vid öronen på förmiddagen och har hittat hem till eftermiddagen.\n\n[Något någon sa efter sin sista övning.]",
+   panels:["Klipp 1: förmiddagen, spända axlar","Klipp 2: eftermiddagen, samma person","Klipp 3: gruppen som applåderar","Reserv: en gruppbild och en mening om dagen"],
+   cta:"Nästa Tala tryggt finns i länken i profilen.",
+   tags:["talarrädsla","kursdag","snackasnyggt"]}),
+46:S("Deltagarna som höll sin sista presentation för en timme sedan.",
+  "Kursdagen den 10 november. Sista Presentationsteknik för året.",
+  {caption:"Årets sista Presentationsteknik i Stockholm. Deltagarna kom in med slides och gick ut med ett budskap.\n\n[En presentation från dagen som vi fortfarande pratar om.]",
+   panels:["Klipp 1: rummet i full gång","Klipp 2: någon mitt i sin presentation","Klipp 3: feedbackrundan","Reserv: en gruppbild efter sista passet"],
+   cta:"Nästa omgång öppnar snart. Länk i profilen.",
+   tags:["presentationsteknik","kursdag","snackasnyggt"]}),
+47:S("Göteborg, det var som att komma hem.",
+  "Kursdagen den 17 november. Första gången utanför Stockholm, så dokumentera allt.",
+  {caption:"Första gången vi kör Snacka Snyggt i Göteborg. En ny stad och en grupp som inte kände oss sedan tidigare.\n\nDe gick ut med samma sak som alla andra grupper gör: orden för det de redan visste.\n\n[Ett ögonblick från dagen i Göteborg.]",
+   panels:["Klipp 1: lokalen på morgonen","Klipp 2: första övningen","Klipp 3: skratt i pausen","Klipp 4: gruppen tillsammans i slutet","Reserv: en gruppbild med staden i bakgrunden"],
+   cta:"Fler städer kommer. Säg till i kommentarerna vilken.",
+   tags:["snackasnyggt","goteborg","kursdag"]})
+};
+
+/* proof slot, copy comes from the existing review routine */
+function reviewSeed(week){
+  var c = week.lead;
+  return {
+    hook:"Recension från " + c.name + ".",
+    why:"Veckans varumärkesinlägg. Citatet hämtas från din recensionsrutin, inte härifrån.",
+    detail:{
+      caption:"[Klistra in recensionen här, ordagrant.]\n\n[Förnamn], [roll], gick " + c.name + ".",
+      panels:["Citatet, kort nog att läsas på en skärm","Vem som sagt det och vilken kurs det gäller","En bild från just den kursdagen om det finns","Sista bilden: nästa datum, utan platssiffra"],
+      cta:"Länk i profilen om du vill sitta i samma rum.",
+      tags:["recension","snackasnyggt","kursdeltagare"]
+    },
+    checklist:["Recensionen är hämtad ordagrant från rutinen","Deltagaren har sagt ja till att citatet publiceras","Namn eller anonymt är bestämt tillsammans med deltagaren","Kursen och ungefärlig månad stämmer","Ingen bild på någon som inte gett sitt medgivande"]
+  };
+}
+
+/* ---------- helpers ---------- */
+var TODAY = new Date();
+function parseDate(s){ var p = s.split("-"); return new Date(Date.UTC(+p[0], +p[1]-1, +p[2])); }
+function dayDiff(a,b){ return Math.round((a - b) / 86400000); }
+var MONTHS_SV = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
+var MONTHS_EN = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtSv(d){ return d.getUTCDate() + " " + MONTHS_SV[d.getUTCMonth()]; }
+function fmtEn(d){ return d.getUTCDate() + " " + MONTHS_EN[d.getUTCMonth()]; }
+function fmtRange(mon){
+  var end = new Date(mon.getTime() + 6*86400000);
+  return fmtEn(mon) + " to " + fmtEn(end);
+}
+function tierOf(days){
+  if (days <= 14) return {key:"hot", label:"Last call"};
+  if (days <= 45) return {key:"warm", label:"Active"};
+  if (days <= 90) return {key:"cool", label:"Build"};
+  return {key:"seed", label:"Seed"};
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+var WEEKS = WEEK_SEEDS.map(function(w){
+  var mon = parseDate(w.monday);
+  var lead = COURSE_BY_ID[w.lead];
+  var days = dayDiff(parseDate(lead.date), mon);
+  var rooms = [lead];
+  if (w.support) rooms.push(COURSE_BY_ID[w.support]);
+  return {
+    id:"v"+w.n, n:w.n, monday:mon, range:fmtRange(mon), theme:w.theme, theme2:w.theme2, why:w.why,
+    lead:lead, rooms:rooms, days:days, tier:tierOf(days)
+  };
+});
+
+var MONTHS_FULL = ["January","February","March","April","May","June","July",
+  "August","September","October","November","December"];
+
+var MONTHS = [], QUARTERS = [];
+WEEKS.forEach(function(w, i){
+  w.i = i;
+  var thu = new Date(w.monday.getTime() + 3*86400000);
+  var key = thu.getUTCFullYear() + "-" + (thu.getUTCMonth() < 9 ? "0" : "") + (thu.getUTCMonth() + 1);
+  var m = null;
+  MONTHS.forEach(function(x){ if (x.key === key) m = x; });
+  if (!m){
+    m = {key:key, i:MONTHS.length, label:MONTHS_FULL[thu.getUTCMonth()] + " " + thu.getUTCFullYear(), weeks:[]};
+    MONTHS.push(m);
+  }
+  w.mi = m.i;
+  m.weeks.push(w);
+});
+MONTHS.forEach(function(m){
+  var p = m.key.split("-");
+  var qk = p[0] + "-Q" + (Math.floor((+p[1] - 1) / 3) + 1);
+  var q = null;
+  QUARTERS.forEach(function(x){ if (x.key === qk) q = x; });
+  if (!q){ q = {key:qk, label:"Q" + qk.split("-Q")[1] + " " + p[0], months:[]}; QUARTERS.push(q); }
+  q.months.push(m);
+});
+
+/* ---------- state ---------- */
+var state = { view:"week", week:0, month:0, railStart:0, open:null,
+  slots:{}, weeks:{}, busy:{}, errors:{} };
+var db = null, sampler = null, samplerChecked = false;
+
+var DAY_NAME = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+function slotId(weekId, key){ return weekId + "__" + key; }
+function slotState(id){ return state.slots[id] || {}; }
+
+function courseDaysIn(week){
+  var end = new Date(week.monday.getTime() + 6*86400000);
+  return COURSES.filter(function(c){
+    var d = parseDate(c.date);
+    return d >= week.monday && d <= end;
+  });
+}
+
+function slotsFor(week){
+  var list = SLOT_BASE.map(function(s, i){
+    var o = {key:s.key, day:s.day, time:s.time, format:s.format, role:s.role, lane:s.lane,
+      theme:s.theme, seedIndex:i};
+    if (s.key === "sun"){
+      var stored = slotState(slotId(week.id, "sun")).role;
+      o.role = stored || (week.n % 2 === 0 ? "review" : "experiment");
+      if (o.role === "review") o.format = "Photo";
+    }
+    return o;
+  });
+  var days = courseDaysIn(week);
+  if (days.length && RECAP[week.n]){
+    var last = parseDate(days[days.length - 1].date);
+    var post = new Date(last.getTime() + 86400000);
+    list.push({key:"recap", day:DAY_NAME[post.getUTCDay()], time:"19:00", format:"Reel",
+      role:"recap", lane:"brand", theme:1, courseDays:days, date:post});
+  }
+  return list;
+}
+
+function seedFor(week, slot){
+  if (slot.role === "review") return reviewSeed(week);
+  if (slot.role === "recap") return RECAP[week.n];
+  return SEED[week.n][slot.seedIndex];
+}
+function currentCopy(week, slot){
+  var st = slotState(slotId(week.id, slot.key));
+  var rolls = st.history || [];
+  var idx = typeof st.cursor === "number" ? st.cursor : rolls.length - 1;
+  if (idx >= 0 && rolls[idx]) return rolls[idx];
+  return seedFor(week, slot);
+}
+function formatOf(week, slot){
+  return slotState(slotId(week.id, slot.key)).format || slot.format;
+}
+function themeText(week, n){
+  var stored = (state.weeks[week.id] || {})["theme" + n];
+  if (typeof stored === "string" && stored.replace(/\s/g, "")) return stored;
+  return n === 1 ? week.theme : week.theme2;
+}
+function themeOf(week, slot){
+  var t = slotState(slotId(week.id, slot.key)).theme;
+  return t === 1 || t === 2 ? t : slot.theme;
+}
+function statusOf(week, slot){
+  return slotState(slotId(week.id, slot.key)).status || "idea";
+}
+
+/* week nearest today opens first */
+(function pickStartWeek(){
+  var best = 0, bestDiff = Infinity;
+  WEEKS.forEach(function(w, i){
+    var d = Math.abs(dayDiff(TODAY, w.monday));
+    if (d < bestDiff){ bestDiff = d; best = i; }
+  });
+  state.week = best;
+})();
+
+/* ---------- rule warnings ---------- */
+function notesFor(week, slot, slots){
+  var warn = [], info = [], fmt = formatOf(week, slot);
+  if (slot.role === "flagship" && fmt !== "Carousel")
+    warn.push("Thursday 15:00 is the flagship slot. Carousels won every one of the 990 followers this quarter.");
+  if (slot.lane === "performance" && fmt === "Photo")
+    warn.push("Photos are service posts. Six of them won two saves and zero followers this quarter.");
+  if (slot.role === "experiment" && fmt !== "Question" && fmt !== "Story")
+    warn.push("This slot exists to win comments. A selling format here loses the only signal the account is missing.");
+  if (slot.lane === "performance" && fmt === "Reel"){
+    var reels = 0;
+    slots.forEach(function(s){ if (s.lane === "performance" && formatOf(week, s) === "Reel") reels++; });
+    if (reels > 1) warn.push("Two reels in the performance lane. Reels reached 98 592 people and sent zero to the profile, so a second one costs a carousel slot.");
+  }
+  if (slot.role === "recap"){
+    info.push("Brand post. Judged on whether the room looks like somewhere you would sit, not on reach.");
+    if (fmt === "Photo") info.push("A single group photo is a complete post here. Ship it the same evening rather than waiting for a better edit.");
+  }
+  if (slot.role === "review"){
+    info.push("Brand post. The quote comes from your review routine, so this card carries the frame and the checklist only.");
+  }
+  return {warn:warn, info:info};
+}
+
+/* ---------- persistence ---------- */
+function saveSlot(id, patch){
+  state.slots[id] = Object.assign({}, state.slots[id], patch);
+  if (!db) return;
+  var body = Object.assign({}, state.slots[id], {updatedAt:new Date().toISOString()});
+  db.doc("slots/" + id).set(body).catch(function(e){
+    toast(e && e.code === "not_granted" ? "Not saved, this view cannot write." : "Not saved: " + (e && e.code));
+  });
+}
+
+function saveWeek(id, patch){
+  state.weeks[id] = Object.assign({}, state.weeks[id], patch);
+  if (!db) return;
+  var body = Object.assign({}, state.weeks[id], {updatedAt:new Date().toISOString()});
+  db.doc("weeks/" + id).set(body).catch(function(e){
+    toast(e && e.code === "not_granted" ? "Not saved, this view cannot write." : "Not saved: " + (e && e.code));
+  });
+}
+
+var toastTimer = null;
+function toast(msg){
+  var el = document.querySelector(".toast");
+  if (!el){ el = document.createElement("div"); el.className = "toast"; document.body.appendChild(el); }
+  el.textContent = msg;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.remove(); }, 3600);
+}
+
+/* ---------- re-roll ---------- */
+function buildPrompt(week, slot){
+  var def = slot, fmt = formatOf(week, slot);
+  var st = slotState(slotId(week.id, slot.key));
+  var avoid = [seedFor(week, slot).hook].concat((st.history || []).map(function(h){ return h.hook; }));
+  var lead = week.lead;
+  var start = parseDate(lead.date);
+  var carriesDate = def.role === "flagship" && week.tier.key !== "seed";
+  if (def.role === "recap"){
+    var cd = def.courseDays.map(function(c){ return c.name + " den " + fmtSv(parseDate(c.date)); }).join(" och ");
+    return [
+      "Du skriver innehåll för Snacka Snyggt, ett svenskt utbildningsföretag inom retorik, kommunikation och ledarskap.",
+      "",
+      "Uppdrag: ett nytt förslag till ett enda inlägg som sammanfattar kursdagen som just varit. Samma dag, samma format som nedan. Byt bara idé och formulering.",
+      "",
+      "Kursdagen: " + cd + ", i " + lead.city + ".",
+      "Veckans tema: " + themeText(week, 1) + ".",
+      "Publiceras: " + def.day + " " + def.time + ", format " + fmt + ".",
+      "Syftet: visa att rummet finns på riktigt och att det är trevligt att sitta i det. Det här inlägget mäts i förtroende, inte i räckvidd.",
+      "",
+      "Viktigt: du var inte där. Hitta aldrig på vad någon sa, hur många som kom eller vad de tyckte. Skriv en ram och markera det som ska fyllas i efter dagen med hakparenteser, till exempel [en sak någon sa i rummet].",
+      "Nämn inte antal platser och inte pris. En hänvisning till nästa datum i slutet räcker.",
+      "",
+      "Röst: varm men rak. Du, aldrig ni. Korta rader. Inga tankstreck, inga emoji, inga versaler för betoning.",
+      "",
+      "Undvik dessa krokar, de är redan använda:",
+      avoid.filter(Boolean).map(function(h){ return "- " + h; }).join("\n"),
+      "",
+      "Svara med enbart JSON, exakt dessa nycklar:",
+      "{\"hook\": \"en mening, max 90 tecken\", \"why\": \"en mening på svenska om varför inlägget ligger här\", \"caption\": \"bildtext, 30 till 70 ord, radbrytningar med \\\\n\", \"panels\": [\"Klipp 1: vad kameran ser\", \"Klipp 2: ...\"], \"cta\": \"en mening\", \"tags\": [\"utan brädgårdstecken\"]}",
+      "panels: 3 till 5 rader, sista raden ska vara en reservplan som bara kräver en gruppbild."
+    ].join("\n");
+  }
+  var lines = [
+    "Du skriver innehåll för Snacka Snyggt, ett svenskt utbildningsföretag inom retorik, kommunikation och ledarskap. Kontot ligger på Instagram.",
+    "",
+    "Uppdrag: ett nytt förslag till ett enda inlägg. Samma tema, samma datum, samma format som nedan. Byt bara idé och formulering.",
+    "",
+    "Vecka " + week.n + ", " + week.range + ".",
+    "Temat det här inlägget bär: " + themeText(week, themeOf(week, def)) + ".",
+    "Veckans andra tema, som du inte ska skriva om: " + themeText(week, themeOf(week, def) === 1 ? 2 : 1) + ".",
+    themeOf(week, def) === 1
+      ? "Rummet som säljs: " + lead.name + ", " + lead.city + ", startar " + fmtSv(start) + "."
+      : "Det här inlägget bär veckans andra tema och pekar inte på veckans rum.",
+    "Brådska: " + week.tier.label + ", " + week.days + " dagar till start räknat från veckans måndag.",
+    "Slot: " + def.day + " " + def.time + ", format " + fmt + ".",
+    "Slotens roll: " + ROLE_BRIEF[def.role],
+    carriesDate ? "Det här inlägget får nämna kursdatumet i bildtexten." :
+      "Det här inlägget får inte nämna datum eller pris.",
+    "",
+    "Röst: varm men rak mentor. Du, aldrig ni. Antites som bärande figur, alltså inte X utan Y. Gärna treregeln. En mekanism som förklarar varför det fungerar. Korta rader, ingen svada.",
+    "Förbjudet: tankstreck och långa streck av alla slag, emoji, versaler för betoning, klyschor som game changer eller next level, engelska låneord där svenska finns.",
+    "",
+    "Undvik dessa krokar, de är redan använda:",
+    avoid.filter(Boolean).map(function(h){ return "- " + h; }).join("\n"),
+    "",
+    "Svara med enbart JSON, exakt dessa nycklar:",
+    "{\"hook\": \"en mening, max 90 tecken\", \"why\": \"en mening på svenska som förklarar varför inlägget ligger här\", \"caption\": \"bildtext, 40 till 90 ord, radbrytningar med \\\\n\", \"panels\": [\"panelrad\", \"panelrad\"], \"cta\": \"en mening\", \"tags\": [\"utan brädgårdstecken\"]}",
+    fmt === "Carousel" ? "panels: 4 till 6 rader, en per bild." :
+      (fmt === "Reel" ? "panels: 3 rader, en per klippbeat." :
+       (fmt === "Question" ? "panels: tom lista." : "panels: 2 till 4 rader."))
+  ];
+  return lines.join("\n");
+}
+
+function getSampler(){
+  if (samplerChecked) return Promise.resolve(sampler);
+  samplerChecked = true;
+  if (!(window.claude && claude.use)) return Promise.resolve(null);
+  return claude.use("sample").then(function(s){ sampler = s; return s; }).catch(function(){ return null; });
+}
+
+function reroll(week, slot){
+  var id = slotId(week.id, slot.key);
+  if (state.busy[id] || slot.role === "review") return;
+  state.busy[id] = true; delete state.errors[id]; render();
+  getSampler().then(function(s){
+    if (!s){ throw {code:"not_granted", message:"no sampler"}; }
+    return s.json(buildPrompt(week, slot), {modelTier:"default"});
+  }).then(function(out){
+    if (!out || !out.hook) throw {code:"bad_output", message:"empty"};
+    var st = slotState(id);
+    var history = (st.history || []).slice(-9);
+    history.push({
+      hook:String(out.hook), why:String(out.why || ""),
+      detail:{ caption:String(out.caption || ""), panels:(out.panels || []).map(String),
+               cta:String(out.cta || ""), tags:(out.tags || []).map(String) }
+    });
+    delete state.busy[id];
+    saveSlot(id, {history:history, cursor:history.length - 1, status:st.status === "posted" ? "posted" : "idea"});
+    render();
+  }).catch(function(e){
+    delete state.busy[id];
+    var code = e && e.code;
+    state.errors[id] =
+      code === "not_granted" ? "This view cannot ask Claude. Open the artifact on claude.ai and allow the request." :
+      code === "rate_limited" ? "Rate limited. Wait a minute, then roll again." :
+      code === "cancelled" ? "Cancelled." :
+      "Could not generate an idea. Try once more.";
+    toast(state.errors[id]);
+    render();
+  });
+}
+
+/* ---------- render ---------- */
+var rail = document.getElementById("rail");
+var railWrap = document.getElementById("railWrap");
+var railPrev = document.getElementById("railPrev");
+var railNext = document.getElementById("railNext");
+var weekHead = document.getElementById("weekHead");
+var wView = document.getElementById("wView");
+var mView = document.getElementById("mView");
+var qView = document.getElementById("qView");
+var grid = document.getElementById("grid");
+var th1 = document.getElementById("th1");
+var th2 = document.getElementById("th2");
+var tabTitle = document.getElementById("tabTitle");
+
+function weekProgress(week){
+  var slots = slotsFor(week), done = 0;
+  slots.forEach(function(s){ if (statusOf(week, s) !== "idea") done++; });
+  return {done:done, total:slots.length};
+}
+
+/* ---------- week rail, paged, never scrolled ---------- */
+function railPerPage(){
+  var w = rail.clientWidth;
+  if (!w) w = Math.min(1392, (document.documentElement.clientWidth || 1200) - 200 - 56) - 80;
+  return Math.max(3, Math.min(WEEKS.length, Math.floor(w / 118)));
+}
+
+function renderRail(){
+  var per = railPerPage();
+  var maxStart = Math.max(0, WEEKS.length - per);
+  var start = Math.min(state.railStart, maxStart);
+  if (state.week < start) start = state.week;
+  if (state.week >= start + per) start = Math.min(maxStart, state.week - per + 1);
+  state.railStart = start;
+  rail.innerHTML = WEEKS.slice(start, start + per).map(function(w){
+    var p = weekProgress(w);
+    var cd = courseDaysIn(w).length;
+    return "<button class=\"wk-pill\" role=\"tab\" data-week=\"" + w.i + "\" aria-current=\"" + (w.i === state.week) + "\">" +
+      "<span class=\"stripe st-" + w.tier.key + "\"></span>" +
+      "<span class=\"id\">v" + w.n + (cd ? " &#9679;" : "") + "</span>" +
+      "<div class=\"dts\">" + esc(w.range) + "</div>" +
+      "<div class=\"prog\"><i style=\"width:" + (p.done / p.total * 100) + "%\"></i></div>" +
+      "</button>";
+  }).join("");
+  railPrev.disabled = start === 0;
+  railNext.disabled = start >= maxStart;
+}
+
+function renderHead(){
+  var w = WEEKS[state.week];
+  if (document.activeElement !== th1) th1.value = themeText(w, 1);
+  if (document.activeElement !== th2) th2.value = themeText(w, 2);
+  document.getElementById("whWhy").innerHTML = w.why;
+  var chip = document.getElementById("whChip");
+  chip.className = "chip " + w.tier.key;
+  chip.textContent = w.tier.label;
+  document.getElementById("prevWk").disabled = state.week === 0;
+  document.getElementById("nextWk").disabled = state.week === WEEKS.length - 1;
+}
+
+/* ---------- month ---------- */
+function renderMonth(){
+  var m = MONTHS[state.month], arc = MONTH_ARC[m.key] || {theme:"", note:""};
+  mView.innerHTML =
+    "<div class=\"ov-head\"><h2>" + esc(m.label) + "</h2>" +
+      "<div class=\"nav-btns\"><button id=\"prevMo\" aria-label=\"Previous month\">&#8592;</button>" +
+      "<button id=\"nextMo\" aria-label=\"Next month\">&#8594;</button></div></div>" +
+    "<p class=\"ov-theme\">" + esc(arc.theme) + "</p>" +
+    "<p class=\"ov-lede\">" + esc(arc.note) + "</p>" +
+    "<div class=\"wk-rows\">" + m.weeks.map(function(w){
+      var cd = courseDaysIn(w).length;
+      return "<button class=\"wk-row\" data-week=\"" + w.i + "\">" +
+        "<div><div class=\"wn\">v" + w.n + "</div><div class=\"wd\">" + esc(w.range) + "</div></div>" +
+        "<div class=\"ta\">" + esc(themeText(w, 1)) + "</div>" +
+        "<div class=\"tb\">" + esc(themeText(w, 2)) + "</div>" +
+        "<div class=\"mk\">" + (cd ? "<i></i>" + (cd > 1 ? cd + " course days" : "Course day") : "") + "</div>" +
+        "</button>";
+    }).join("") + "</div>";
+  document.getElementById("prevMo").disabled = state.month === 0;
+  document.getElementById("nextMo").disabled = state.month === MONTHS.length - 1;
+}
+
+/* ---------- quarter ---------- */
+function renderQuarter(){
+  qView.innerHTML = QUARTERS.map(function(q){
+    var arc = QUARTER_ARC[q.key] || {theme:"", note:""};
+    return "<div class=\"q-block\"><h2 class=\"q-title\">" + esc(q.label) + "</h2>" +
+      "<p class=\"ov-theme\">" + esc(arc.theme) + "</p>" +
+      "<p class=\"ov-lede\">" + esc(arc.note) + "</p>" +
+      "<div class=\"m-tiles\">" + q.months.map(function(m){
+        var ma = MONTH_ARC[m.key] || {theme:""};
+        var cd = 0;
+        m.weeks.forEach(function(w){ cd += courseDaysIn(w).length; });
+        return "<button class=\"m-tile\" data-month=\"" + m.i + "\">" +
+          "<div class=\"mn\">" + esc(m.label) + "</div>" +
+          "<div class=\"mt\">" + esc(ma.theme) + "</div>" +
+          "<div class=\"mw\">" + m.weeks.length + " weeks, " +
+            (cd === 1 ? "1 course day" : cd + " course days") + "</div>" +
+          "</button>";
+      }).join("") + "</div></div>";
+  }).join("");
+}
+
+var ICON_ROLL = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M21 12a9 9 0 1 1-3-6.7\"/><path d=\"M21 4v5h-5\"/></svg>";
+
+function detailHtml(week, slot, copy){
+  var id = slotId(week.id, slot.key), st = slotState(id);
+  var d = copy.detail, fmt = formatOf(week, slot), left;
+
+  if (slot.role === "review"){
+    var seed = seedFor(week, slot);
+    left = "<div><h4>Proof post</h4>" +
+      "<p class=\"quote\">" + (st.quote ? esc(st.quote) : "Citatet kommer fr\u00e5n din recensionsrutin.") + "</p>" +
+      "<input class=\"slot-in\" data-quote=\"" + slot.key + "\" value=\"" + esc(st.quote || "") +
+        "\" placeholder=\"Klistra in recensionen ordagrant\">" +
+      "<input class=\"slot-in\" data-who=\"" + slot.key + "\" value=\"" + esc(st.who || "") +
+        "\" placeholder=\"F\u00f6rnamn, roll, kurs\">" +
+      "<h4 style=\"margin-top:16px\">Before it goes out</h4>" +
+      "<ul class=\"check\">" + seed.checklist.map(function(c){
+        return "<li><span>" + esc(c) + "</span></li>"; }).join("") + "</ul></div>";
+  } else if (d){
+    left = "<div><h4>Example caption</h4><p class=\"caption\">" + esc(d.caption) + "</p>" +
+      (d.cta ? "<div class=\"cta-box\">" + esc(d.cta) + "</div>" : "") +
+      (d.tags && d.tags.length ? "<div class=\"meta-row\">" + d.tags.map(function(t){
+        return "<span class=\"tag\">#" + esc(t) + "</span>"; }).join("") + "</div>" : "") + "</div>";
+  } else {
+    left = "<div><h4>Example content</h4><p class=\"empty-detail\">No example written for this slot yet.</p></div>";
+  }
+
+  var panels = d && d.panels && d.panels.length
+    ? "<h4>" + (slot.role === "recap" || fmt === "Reel" ? "Shot list" : "Panels") + "</h4><ol class=\"panels\">" +
+      d.panels.map(function(x){ return "<li><span>" + esc(x) + "</span></li>"; }).join("") + "</ol>"
+    : "";
+  var rolls = st.history || [];
+  var cur = typeof st.cursor === "number" ? st.cursor : rolls.length - 1;
+  var hist = rolls.length
+    ? "<div class=\"hist\"><button data-hist=\"" + slot.key + "|-1\"" + (cur <= -1 ? " disabled" : "") + ">Older</button>" +
+      "<span>" + (cur < 0 ? "Original" : "Roll " + (cur + 1) + " of " + rolls.length) + "</span>" +
+      "<button data-hist=\"" + slot.key + "|1\"" + (cur >= rolls.length - 1 ? " disabled" : "") + ">Newer</button></div>"
+    : "";
+  var themePick = "<h4 style=\"margin-top:18px\">Serves theme</h4><div class=\"fmt-picker\">" +
+    [1,2].map(function(n){
+      return "<button data-th=\"" + slot.key + "|" + n + "\" aria-pressed=\"" +
+        (themeOf(week, slot) === n) + "\">" + (n === 1 ? "A" : "B") + ": " + esc(themeText(week, n)) + "</button>";
+    }).join("") + "</div>";
+  var roleSwitch = slot.key === "sun"
+    ? "<h4 style=\"margin-top:18px\">This slot runs</h4><div class=\"fmt-picker\">" +
+      [["experiment","Community question"],["review","Student review"]].map(function(r){
+        return "<button data-role=\"" + r[0] + "\" aria-pressed=\"" + (slot.role === r[0]) + "\">" + r[1] + "</button>";
+      }).join("") + "</div>"
+    : "";
+  var right = "<div>" + panels +
+    "<h4 style=\"margin-top:" + (panels ? "18px" : "0") + "\">Format</h4>" +
+    "<div class=\"fmt-picker\">" + FORMATS.map(function(f){
+      return "<button data-fmt=\"" + slot.key + "|" + f + "\" aria-pressed=\"" + (f === fmt) + "\">" + f + "</button>";
+    }).join("") + "</div>" + themePick + roleSwitch +
+    "<h4 style=\"margin-top:18px\">Note</h4>" +
+    "<textarea class=\"note\" data-note=\"" + slot.key + "\" placeholder=\"Anything the writer needs to know\">" +
+      esc(st.note || "") + "</textarea>" + hist +
+    (state.errors[id] ? "<div class=\"err\">" + esc(state.errors[id]) + "</div>" : "") +
+    "</div>";
+  return "<div class=\"detail\">" + left + right + "</div>";
+}
+
+function renderGrid(){
+  var w = WEEKS[state.week], slots = slotsFor(w);
+  grid.className = "grid" + (slots.length > 5 ? " six" : "");
+  grid.innerHTML = slots.map(function(slot){
+    var id = slotId(w.id, slot.key), copy = currentCopy(w, slot), fmt = formatOf(w, slot);
+    var open = state.open === id, status = statusOf(w, slot);
+    var n = notesFor(w, slot, slots), busy = state.busy[id];
+    var canRoll = false; /* re roll needs Claude runtime, absent on this read only page */
+    var tn = themeOf(w, slot);
+    return "<article class=\"card" + (open ? " is-open" : "") + (slot.lane === "brand" ? " brand" : "") + "\">" +
+      "<div class=\"card-top\"><span class=\"day\">" + slot.day + "</span>" +
+        "<span class=\"time num\">" + slot.time + "</span>" +
+        (slot.role === "flagship" ? "<span class=\"flagship\">Flagship</span>" : "") +
+        "<span class=\"fmt " + fmt.toLowerCase() + "\">" + fmt + "</span></div>" +
+      "<div class=\"card-body\">" +
+        "<div class=\"card-tags\">" +
+          "<span class=\"lane" + (slot.lane === "brand" ? " b" : "") + "\">" + ROLE_LABEL[slot.role] + "</span>" +
+          "<span class=\"thpill" + (tn === 2 ? " b" : "") + "\">" + esc(themeText(w, tn)) + "</span>" +
+        "</div>" +
+        "<p class=\"hook\">" + esc(copy.hook) + "</p>" +
+        "<p class=\"why\">" + esc(copy.why) + "</p>" +
+        n.warn.map(function(t){ return "<div class=\"warn\"><b>!</b><span>" + esc(t) + "</span></div>"; }).join("") +
+        n.info.map(function(t){ return "<div class=\"info\"><b>&#9679;</b><span>" + esc(t) + "</span></div>"; }).join("") +
+      "</div>" +
+      "<div class=\"card-foot\">" +
+        "<button class=\"status\" data-status=\"" + slot.key + "\" data-s=\"" + status + "\">" + status + "</button>" +
+        (canRoll ? "<button class=\"icon-btn\" data-roll=\"" + slot.key + "\"" + (busy ? " disabled" : "") + ">" +
+          "<span" + (busy ? " class=\"spin\"" : "") + " style=\"display:inline-flex\">" + ICON_ROLL + "</span>" +
+          (busy ? "Rolling" : "Re roll") + "</button>" : "<span style=\"margin-left:auto\"></span>") +
+        "<button class=\"icon-btn\" data-open=\"" + slot.key + "\" aria-expanded=\"" + open + "\">" +
+          (open ? "Close" : (slot.role === "review" ? "Frame" : "Example")) + "</button>" +
+      "</div>" +
+      (open ? detailHtml(w, slot, copy) : "") +
+    "</article>";
+  }).join("");
+}
+
+function setView(v){
+  if (v === state.view) return;
+  if (v === "month") state.month = WEEKS[state.week].mi;
+  state.view = v;
+  state.open = null;
+  render();
+}
+
+function render(){
+  var v = state.view;
+  Array.prototype.forEach.call(document.querySelectorAll(".zoom button"), function(b){
+    b.setAttribute("aria-selected", String(b.dataset.view === v));
+  });
+  tabTitle.textContent = v === "week" ? "Week " + WEEKS[state.week].n :
+    v === "month" ? MONTHS[state.month].label : "Quarter";
+  railWrap.hidden = v !== "week";
+  weekHead.hidden = v !== "week";
+  wView.hidden = v !== "week";
+  mView.hidden = v !== "month";
+  qView.hidden = v !== "quarter";
+  if (v === "week"){ renderRail(); renderHead(); renderGrid(); }
+  else if (v === "month") renderMonth();
+  else renderQuarter();
+}
+
+/* ---------- events ---------- */
+function slotByKey(week, key){
+  var found = null;
+  slotsFor(week).forEach(function(s){ if (s.key === key) found = s; });
+  return found;
+}
+
+document.addEventListener("click", function(ev){
+  var t = ev.target.closest("button");
+  if (!t) return;
+  var w = WEEKS[state.week];
+  if (t.dataset.view !== undefined){ setView(t.dataset.view); return; }
+  if (t.dataset.month !== undefined){ state.month = +t.dataset.month; state.view = "month"; render(); return; }
+  if (t.id === "prevMo"){ state.month = Math.max(0, state.month - 1); render(); return; }
+  if (t.id === "nextMo"){ state.month = Math.min(MONTHS.length - 1, state.month + 1); render(); return; }
+  if (t.id === "railPrev"){ state.railStart = Math.max(0, state.railStart - railPerPage()); renderRail(); return; }
+  if (t.id === "railNext"){
+    state.railStart = Math.min(Math.max(0, WEEKS.length - railPerPage()), state.railStart + railPerPage());
+    renderRail(); return;
+  }
+  if (t.dataset.week !== undefined){
+    state.week = +t.dataset.week; state.open = null; state.view = "week"; render(); return;
+  }
+  if (t.id === "prevWk"){ state.week = Math.max(0, state.week - 1); state.open = null; render(); return; }
+  if (t.id === "nextWk"){ state.week = Math.min(WEEKS.length - 1, state.week + 1); state.open = null; render(); return; }
+  if (t.id === "whyToggle"){
+    var why = document.getElementById("whWhy");
+    why.hidden = !why.hidden;
+    t.setAttribute("aria-expanded", String(!why.hidden));
+    return;
+  }
+  if (t.dataset.open !== undefined){
+    var oid = slotId(w.id, t.dataset.open);
+    state.open = state.open === oid ? null : oid; render(); return;
+  }
+  if (t.dataset.status !== undefined){
+    var slot = slotByKey(w, t.dataset.status);
+    var order = ["idea","approved","posted"];
+    var next = order[(order.indexOf(statusOf(w, slot)) + 1) % 3];
+    saveSlot(slotId(w.id, slot.key), {status:next}); render(); return;
+  }
+  if (t.dataset.roll !== undefined){ reroll(w, slotByKey(w, t.dataset.roll)); return; }
+  if (t.dataset.gen !== undefined){ reroll(w, slotByKey(w, t.dataset.gen)); return; }
+  if (t.dataset.fmt !== undefined){
+    var parts = t.dataset.fmt.split("|");
+    saveSlot(slotId(w.id, parts[0]), {format:parts[1]}); render(); return;
+  }
+  if (t.dataset.th !== undefined){
+    var tp = t.dataset.th.split("|");
+    saveSlot(slotId(w.id, tp[0]), {theme:+tp[1]}); render(); return;
+  }
+  if (t.dataset.role !== undefined){
+    saveSlot(slotId(w.id, "sun"), {role:t.dataset.role, format:null, cursor:-1});
+    render(); return;
+  }
+  if (t.dataset.hist !== undefined){
+    var hp = t.dataset.hist.split("|"), dir = +hp[1];
+    var hid = slotId(w.id, hp[0]), hst = slotState(hid);
+    var rolls2 = hst.history || [];
+    var c2 = typeof hst.cursor === "number" ? hst.cursor : rolls2.length - 1;
+    saveSlot(hid, {cursor:Math.max(-1, Math.min(rolls2.length - 1, c2 + dir))}); render(); return;
+  }
+});
+
+grid.addEventListener("change", function(ev){
+  var el = ev.target, w = WEEKS[state.week];
+  if (!el.dataset) return;
+  if (el.dataset.note !== undefined) saveSlot(slotId(w.id, el.dataset.note), {note:el.value});
+  if (el.dataset.quote !== undefined){ saveSlot(slotId(w.id, el.dataset.quote), {quote:el.value}); render(); }
+  if (el.dataset.who !== undefined) saveSlot(slotId(w.id, el.dataset.who), {who:el.value});
+});
+
+[[th1, 1], [th2, 2]].forEach(function(pair){
+  pair[0].addEventListener("change", function(){
+    var w = WEEKS[state.week], v = pair[0].value.replace(/\s+/g, " ").trim();
+    var patch = {};
+    patch["theme" + pair[1]] = v || (pair[1] === 1 ? w.theme : w.theme2);
+    saveWeek(w.id, patch);
+    render();
+  });
+});
+
+var railTimer = null;
+window.addEventListener("resize", function(){
+  if (state.view !== "week") return;
+  clearTimeout(railTimer);
+  railTimer = setTimeout(renderRail, 140);
+});
+
+document.addEventListener("keydown", function(ev){
+  if (ev.target.tagName === "TEXTAREA" || ev.target.tagName === "INPUT" || ev.metaKey || ev.ctrlKey) return;
+  if (state.view !== "week") return;
+  if (ev.key === "ArrowLeft" && state.week > 0){ state.week--; state.open = null; render(); }
+  if (ev.key === "ArrowRight" && state.week < WEEKS.length - 1){ state.week++; state.open = null; render(); }
+});
+
+/* ---------- boot ---------- */
+render();
+
+if (window.claude && claude.use){
+  claude.use("db").then(function(d){
+    if (!d) return;
+    db = d;
+    document.getElementById("dbState").textContent = "Saved to the shared board.";
+    db.collection("slots").onSnapshot(function(snap){
+      var next = {};
+      snap.docs.forEach(function(doc){ next[doc.id] = doc.data(); });
+      state.slots = next;
+      render();
+    }, function(){
+      document.getElementById("dbState").textContent = "Live sync stopped. Reload to reconnect.";
+    });
+    db.collection("weeks").onSnapshot(function(snap){
+      var next = {};
+      snap.docs.forEach(function(doc){ next[doc.id] = doc.data(); });
+      state.weeks = next;
+      render();
+    }, function(){});
+  }).catch(function(){});
+}
+</script>
+</body>
+</html>
