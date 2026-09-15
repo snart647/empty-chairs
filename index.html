@@ -114,7 +114,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .th-key.b{background:var(--line);color:var(--ink-muted)}
 .th-in{font:inherit;background:none;border:0;color:var(--ink);padding:2px 0;width:100%;
   min-width:0;border-bottom:1px dashed transparent}
-.th-in:hover{border-bottom-color:var(--line)}
 .th-in.a{font-family:"Bebas Neue",Impact,sans-serif;font-size:clamp(25px,3vw,33px);
   letter-spacing:.5px;line-height:1.06;overflow-wrap:anywhere}
 .th-in.b{font-size:13.5px;color:var(--ink-muted);letter-spacing:.2px}
@@ -190,8 +189,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .check li{display:grid;grid-template-columns:16px 1fr;gap:9px;align-items:baseline;color:var(--ink-muted)}
 .check li::before{content:"";width:9px;height:9px;border:1.5px solid var(--accent);border-radius:3px;
   display:block;transform:translateY(1px)}
-.slot-in{width:100%;font:inherit;font-size:13.5px;color:var(--ink);background:var(--surface-2);
-  border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:6px}
 .quote{font-size:15px;line-height:1.5;border-left:3px solid var(--accent);padding-left:12px;margin:0;color:var(--ink)}
 .card-body{padding:10px 14px 12px;display:flex;flex-direction:column;gap:8px;flex:1}
 .hook{font-size:clamp(14.5px,1vw + 12px,16.5px);line-height:1.3;font-weight:700;margin:0;text-wrap:pretty;
@@ -204,7 +201,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 12px;border-top:1px solid var(--line-soft);
   background:var(--surface-2)}
 .status{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;
-  border-radius:999px;border:1px solid var(--line);color:var(--ink-muted)}
+  border-radius:999px;border:1px solid var(--line);color:var(--ink-muted);
+  display:inline-flex;align-items:center;cursor:default}
 .status[data-s="approved"]{background:var(--ok-soft);color:var(--ok);border-color:transparent}
 .status[data-s="posted"]{background:var(--primary);color:var(--primary-ink);border-color:transparent}
 .icon-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;
@@ -228,20 +226,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .meta-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .tag{font-size:12px;color:var(--primary);background:var(--primary-soft);border-radius:6px;padding:3px 8px}
 .cta-box{margin-top:14px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;font-size:13.5px;color:var(--ink)}
-.note{width:100%;min-height:64px;resize:vertical;font:inherit;font-size:13.5px;color:var(--ink);
-  background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;margin-top:6px}
-.fmt-picker{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.fmt-picker button{font-size:11.5px;font-weight:700;letter-spacing:.6px;border:1px solid var(--line);
-  border-radius:6px;padding:4px 9px;color:var(--ink-muted)}
-.fmt-picker button[aria-pressed="true"]{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
-.hist{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12.5px;color:var(--ink-muted)}
-.hist button{border:1px solid var(--line);border-radius:6px;padding:3px 9px;font-size:12px}
-.hist button[disabled]{opacity:.4;cursor:default}
 .empty-detail{font-size:13.5px;color:var(--ink-muted);max-width:52ch}
-.gen-btn{margin-top:10px;background:var(--primary);color:var(--primary-ink);border-radius:6px;
-  padding:8px 14px;font-size:13px;font-weight:700;letter-spacing:.3px}
-.gen-btn[disabled]{opacity:.5;cursor:default}
-.err{font-size:12.5px;color:var(--bad);background:var(--bad-soft);border-radius:9px;padding:8px 10px;margin-top:10px}
 
 /* reference, OS card + brief-details style summary */
 .ref{margin:24px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
@@ -277,7 +262,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .ov-head .nav-btns button:hover{background:var(--surface-2)}
   .why-toggle:hover{color:var(--ink);background:var(--surface-2)}
   .icon-btn:hover{color:var(--ink);border-color:var(--primary)}
-  .gen-btn:hover{background:var(--primary-hover)}
 }
 
 /* touch: guarantee 44px hit areas without inflating visuals */
@@ -285,8 +269,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .nav-item{min-height:44px}
   .rail-nav{min-width:44px;min-height:44px}
   .nav-btns button{min-height:44px;min-width:40px}
-  .icon-btn,.status{min-height:40px}
-  .gen-btn{min-height:44px}
+  .icon-btn{min-height:40px}
   .why-toggle{min-height:36px}
 }
 
@@ -378,14 +361,14 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <button class="nav-item" data-view="month" role="tab" title="Month"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg></span><span class="sr-only">Month</span></button>
       <button class="nav-item" data-view="week" role="tab" title="Week"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><line x1="3" y1="4" x2="3" y2="20"/><line x1="6" y1="4" x2="6" y2="20"/><line x1="9" y1="4" x2="9" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="15" y1="4" x2="15" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/><line x1="21" y1="4" x2="21" y2="20"/></svg></span><span class="sr-only">Week</span></button>
     </nav>
-    <p class="ro-note">Read only preview. Edits reset on reload.</p>
+    <p class="ro-note">Read only preview.</p>
   </aside>
 
   <main class="main">
     <header class="main-head">
       <h1 class="tab-title" id="tabTitle">Week</h1>
     </header>
-    <p class="ro-note head">Read only preview. Edits reset on reload.</p>
+    <p class="ro-note head">Read only preview.</p>
 
     <div class="rail-wrap" id="railWrap">
       <button class="rail-nav" id="railPrev" aria-label="Earlier weeks">&#8249;</button>
@@ -397,9 +380,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       <div class="wh-row">
         <div class="th-pair">
           <div class="th-row"><span class="th-key">A</span>
-            <input class="th-in a" id="th1" aria-label="Primary theme"></div>
+            <div class="th-in a" id="th1"></div></div>
           <div class="th-row"><span class="th-key b">B</span>
-            <input class="th-in b" id="th2" aria-label="Secondary theme"></div>
+            <div class="th-in b" id="th2"></div></div>
         </div>
         <div class="wh-side">
           <span class="chip" id="whChip"></span>
@@ -442,7 +425,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     <div class="ref-foot">
       <span>Seat data from EduAdmin, fetched 31 August 2026. Performance data from Meta Graph API v23.0, snapshot 25 August 2026.</span>
       <span>Two December dates sit in the source totals without per date detail. They fall outside this 12 week board.</span>
-      <span id="dbState">Local session only.</span>
+      <span id="dbState">Read only.</span>
     </div>
   </details>
   </main>
@@ -819,6 +802,7 @@ function reviewSeed(week){
 
 /* ---------- helpers ---------- */
 var TODAY = new Date();
+var TODAY_UTC = Date.UTC(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
 function parseDate(s){ var p = s.split("-"); return new Date(Date.UTC(+p[0], +p[1]-1, +p[2])); }
 function dayDiff(a,b){ return Math.round((a - b) / 86400000); }
 var MONTHS_SV = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -838,7 +822,10 @@ function tierOf(days){
 function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
 
-var WEEKS = WEEK_SEEDS.map(function(w){
+/* a week drops off the board once its Sunday is over */
+var WEEKS = WEEK_SEEDS.filter(function(w){
+  return parseDate(w.monday).getTime() + 7*86400000 > TODAY_UTC;
+}).map(function(w){
   var mon = parseDate(w.monday);
   var lead = COURSE_BY_ID[w.lead];
   var days = dayDiff(parseDate(lead.date), mon);
@@ -879,9 +866,10 @@ MONTHS.forEach(function(m){
 /* ---------- state ---------- */
 var state = { view:"week", week:0, month:0, railStart:0, open:null,
   slots:{}, weeks:{}, busy:{}, errors:{} };
-var db = null, sampler = null, samplerChecked = false;
+var db = null;
 
 var DAY_NAME = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+var WEEK_ORDER = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
 function slotId(weekId, key){ return weekId + "__" + key; }
 function slotState(id){ return state.slots[id] || {}; }
@@ -912,6 +900,9 @@ function slotsFor(week){
     list.push({key:"recap", day:DAY_NAME[post.getUTCDay()], time:"19:00", format:"Reel",
       role:"recap", lane:"brand", theme:1, courseDays:days, date:post});
   }
+  list.sort(function(a, b){
+    return (WEEK_ORDER.indexOf(a.day) - WEEK_ORDER.indexOf(b.day)) || (a.time < b.time ? -1 : a.time > b.time ? 1 : 0);
+  });
   return list;
 }
 
@@ -943,15 +934,7 @@ function statusOf(week, slot){
   return slotState(slotId(week.id, slot.key)).status || "idea";
 }
 
-/* week nearest today opens first */
-(function pickStartWeek(){
-  var best = 0, bestDiff = Infinity;
-  WEEKS.forEach(function(w, i){
-    var d = Math.abs(dayDiff(TODAY, w.monday));
-    if (d < bestDiff){ bestDiff = d; best = i; }
-  });
-  state.week = best;
-})();
+/* finished weeks are filtered out, so the current week is always first */
 
 /* ---------- rule warnings ---------- */
 function notesFor(week, slot, slots){
@@ -975,138 +958,6 @@ function notesFor(week, slot, slots){
     info.push("Brand post. The quote comes from your review routine, so this card carries the frame and the checklist only.");
   }
   return {warn:warn, info:info};
-}
-
-/* ---------- persistence ---------- */
-function saveSlot(id, patch){
-  state.slots[id] = Object.assign({}, state.slots[id], patch);
-  if (!db) return;
-  var body = Object.assign({}, state.slots[id], {updatedAt:new Date().toISOString()});
-  db.doc("slots/" + id).set(body).catch(function(e){
-    toast(e && e.code === "not_granted" ? "Not saved, this view cannot write." : "Not saved: " + (e && e.code));
-  });
-}
-
-function saveWeek(id, patch){
-  state.weeks[id] = Object.assign({}, state.weeks[id], patch);
-  if (!db) return;
-  var body = Object.assign({}, state.weeks[id], {updatedAt:new Date().toISOString()});
-  db.doc("weeks/" + id).set(body).catch(function(e){
-    toast(e && e.code === "not_granted" ? "Not saved, this view cannot write." : "Not saved: " + (e && e.code));
-  });
-}
-
-var toastTimer = null;
-function toast(msg){
-  var el = document.querySelector(".toast");
-  if (!el){ el = document.createElement("div"); el.className = "toast"; document.body.appendChild(el); }
-  el.textContent = msg;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ el.remove(); }, 3600);
-}
-
-/* ---------- re-roll ---------- */
-function buildPrompt(week, slot){
-  var def = slot, fmt = formatOf(week, slot);
-  var st = slotState(slotId(week.id, slot.key));
-  var avoid = [seedFor(week, slot).hook].concat((st.history || []).map(function(h){ return h.hook; }));
-  var lead = week.lead;
-  var start = parseDate(lead.date);
-  var carriesDate = def.role === "flagship" && week.tier.key !== "seed";
-  if (def.role === "recap"){
-    var cd = def.courseDays.map(function(c){ return c.name + " den " + fmtSv(parseDate(c.date)); }).join(" och ");
-    return [
-      "Du skriver innehåll för Snacka Snyggt, ett svenskt utbildningsföretag inom retorik, kommunikation och ledarskap.",
-      "",
-      "Uppdrag: ett nytt förslag till ett enda inlägg som sammanfattar kursdagen som just varit. Samma dag, samma format som nedan. Byt bara idé och formulering.",
-      "",
-      "Kursdagen: " + cd + ", i " + lead.city + ".",
-      "Veckans tema: " + themeText(week, 1) + ".",
-      "Publiceras: " + def.day + " " + def.time + ", format " + fmt + ".",
-      "Syftet: visa att rummet finns på riktigt och att det är trevligt att sitta i det. Det här inlägget mäts i förtroende, inte i räckvidd.",
-      "",
-      "Viktigt: du var inte där. Hitta aldrig på vad någon sa, hur många som kom eller vad de tyckte. Skriv en ram och markera det som ska fyllas i efter dagen med hakparenteser, till exempel [en sak någon sa i rummet].",
-      "Nämn inte antal platser och inte pris. En hänvisning till nästa datum i slutet räcker.",
-      "",
-      "Röst: varm men rak. Du, aldrig ni. Korta rader. Inga tankstreck, inga emoji, inga versaler för betoning.",
-      "",
-      "Undvik dessa krokar, de är redan använda:",
-      avoid.filter(Boolean).map(function(h){ return "- " + h; }).join("\n"),
-      "",
-      "Svara med enbart JSON, exakt dessa nycklar:",
-      "{\"hook\": \"en mening, max 90 tecken\", \"why\": \"en mening på svenska om varför inlägget ligger här\", \"caption\": \"bildtext, 30 till 70 ord, radbrytningar med \\\\n\", \"panels\": [\"Klipp 1: vad kameran ser\", \"Klipp 2: ...\"], \"cta\": \"en mening\", \"tags\": [\"utan brädgårdstecken\"]}",
-      "panels: 3 till 5 rader, sista raden ska vara en reservplan som bara kräver en gruppbild."
-    ].join("\n");
-  }
-  var lines = [
-    "Du skriver innehåll för Snacka Snyggt, ett svenskt utbildningsföretag inom retorik, kommunikation och ledarskap. Kontot ligger på Instagram.",
-    "",
-    "Uppdrag: ett nytt förslag till ett enda inlägg. Samma tema, samma datum, samma format som nedan. Byt bara idé och formulering.",
-    "",
-    "Vecka " + week.n + ", " + week.range + ".",
-    "Temat det här inlägget bär: " + themeText(week, themeOf(week, def)) + ".",
-    "Veckans andra tema, som du inte ska skriva om: " + themeText(week, themeOf(week, def) === 1 ? 2 : 1) + ".",
-    themeOf(week, def) === 1
-      ? "Rummet som säljs: " + lead.name + ", " + lead.city + ", startar " + fmtSv(start) + "."
-      : "Det här inlägget bär veckans andra tema och pekar inte på veckans rum.",
-    "Brådska: " + week.tier.label + ", " + week.days + " dagar till start räknat från veckans måndag.",
-    "Slot: " + def.day + " " + def.time + ", format " + fmt + ".",
-    "Slotens roll: " + ROLE_BRIEF[def.role],
-    carriesDate ? "Det här inlägget får nämna kursdatumet i bildtexten." :
-      "Det här inlägget får inte nämna datum eller pris.",
-    "",
-    "Röst: varm men rak mentor. Du, aldrig ni. Antites som bärande figur, alltså inte X utan Y. Gärna treregeln. En mekanism som förklarar varför det fungerar. Korta rader, ingen svada.",
-    "Förbjudet: tankstreck och långa streck av alla slag, emoji, versaler för betoning, klyschor som game changer eller next level, engelska låneord där svenska finns.",
-    "",
-    "Undvik dessa krokar, de är redan använda:",
-    avoid.filter(Boolean).map(function(h){ return "- " + h; }).join("\n"),
-    "",
-    "Svara med enbart JSON, exakt dessa nycklar:",
-    "{\"hook\": \"en mening, max 90 tecken\", \"why\": \"en mening på svenska som förklarar varför inlägget ligger här\", \"caption\": \"bildtext, 40 till 90 ord, radbrytningar med \\\\n\", \"panels\": [\"panelrad\", \"panelrad\"], \"cta\": \"en mening\", \"tags\": [\"utan brädgårdstecken\"]}",
-    fmt === "Carousel" ? "panels: 4 till 6 rader, en per bild." :
-      (fmt === "Reel" ? "panels: 3 rader, en per klippbeat." :
-       (fmt === "Question" ? "panels: tom lista." : "panels: 2 till 4 rader."))
-  ];
-  return lines.join("\n");
-}
-
-function getSampler(){
-  if (samplerChecked) return Promise.resolve(sampler);
-  samplerChecked = true;
-  if (!(window.claude && claude.use)) return Promise.resolve(null);
-  return claude.use("sample").then(function(s){ sampler = s; return s; }).catch(function(){ return null; });
-}
-
-function reroll(week, slot){
-  var id = slotId(week.id, slot.key);
-  if (state.busy[id] || slot.role === "review") return;
-  state.busy[id] = true; delete state.errors[id]; render();
-  getSampler().then(function(s){
-    if (!s){ throw {code:"not_granted", message:"no sampler"}; }
-    return s.json(buildPrompt(week, slot), {modelTier:"default"});
-  }).then(function(out){
-    if (!out || !out.hook) throw {code:"bad_output", message:"empty"};
-    var st = slotState(id);
-    var history = (st.history || []).slice(-9);
-    history.push({
-      hook:String(out.hook), why:String(out.why || ""),
-      detail:{ caption:String(out.caption || ""), panels:(out.panels || []).map(String),
-               cta:String(out.cta || ""), tags:(out.tags || []).map(String) }
-    });
-    delete state.busy[id];
-    saveSlot(id, {history:history, cursor:history.length - 1, status:st.status === "posted" ? "posted" : "idea"});
-    render();
-  }).catch(function(e){
-    delete state.busy[id];
-    var code = e && e.code;
-    state.errors[id] =
-      code === "not_granted" ? "This view cannot ask Claude. Open the artifact on claude.ai and allow the request." :
-      code === "rate_limited" ? "Rate limited. Wait a minute, then roll again." :
-      code === "cancelled" ? "Cancelled." :
-      "Could not generate an idea. Try once more.";
-    toast(state.errors[id]);
-    render();
-  });
 }
 
 /* ---------- render ---------- */
@@ -1164,8 +1015,8 @@ function renderRail(){
 
 function renderHead(){
   var w = WEEKS[state.week];
-  if (document.activeElement !== th1) th1.value = themeText(w, 1);
-  if (document.activeElement !== th2) th2.value = themeText(w, 2);
+  th1.textContent = themeText(w, 1);
+  th2.textContent = themeText(w, 2);
   document.getElementById("whWhy").innerHTML = w.why;
   var chip = document.getElementById("whChip");
   chip.className = "chip " + w.tier.key;
@@ -1217,20 +1068,15 @@ function renderQuarter(){
   }).join("");
 }
 
-var ICON_ROLL = "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><path d=\"M21 12a9 9 0 1 1-3-6.7\"/><path d=\"M21 4v5h-5\"/></svg>";
-
 function detailHtml(week, slot, copy){
-  var id = slotId(week.id, slot.key), st = slotState(id);
+  var st = slotState(slotId(week.id, slot.key));
   var d = copy.detail, fmt = formatOf(week, slot), left;
 
   if (slot.role === "review"){
     var seed = seedFor(week, slot);
     left = "<div><h4>Proof post</h4>" +
       "<p class=\"quote\">" + (st.quote ? esc(st.quote) : "Citatet kommer fr\u00e5n din recensionsrutin.") + "</p>" +
-      "<input class=\"slot-in\" data-quote=\"" + slot.key + "\" value=\"" + esc(st.quote || "") +
-        "\" placeholder=\"Klistra in recensionen ordagrant\">" +
-      "<input class=\"slot-in\" data-who=\"" + slot.key + "\" value=\"" + esc(st.who || "") +
-        "\" placeholder=\"F\u00f6rnamn, roll, kurs\">" +
+      (st.who ? "<p class=\"empty-detail\" style=\"margin-top:8px\">" + esc(st.who) + "</p>" : "") +
       "<h4 style=\"margin-top:16px\">Before it goes out</h4>" +
       "<ul class=\"check\">" + seed.checklist.map(function(c){
         return "<li><span>" + esc(c) + "</span></li>"; }).join("") + "</ul></div>";
@@ -1247,35 +1093,10 @@ function detailHtml(week, slot, copy){
     ? "<h4>" + (slot.role === "recap" || fmt === "Reel" ? "Shot list" : "Panels") + "</h4><ol class=\"panels\">" +
       d.panels.map(function(x){ return "<li><span>" + esc(x) + "</span></li>"; }).join("") + "</ol>"
     : "";
-  var rolls = st.history || [];
-  var cur = typeof st.cursor === "number" ? st.cursor : rolls.length - 1;
-  var hist = rolls.length
-    ? "<div class=\"hist\"><button data-hist=\"" + slot.key + "|-1\"" + (cur <= -1 ? " disabled" : "") + ">Older</button>" +
-      "<span>" + (cur < 0 ? "Original" : "Roll " + (cur + 1) + " of " + rolls.length) + "</span>" +
-      "<button data-hist=\"" + slot.key + "|1\"" + (cur >= rolls.length - 1 ? " disabled" : "") + ">Newer</button></div>"
+  var note = st.note
+    ? "<h4 style=\"margin-top:" + (panels ? "18px" : "0") + "\">Note</h4><p class=\"caption\">" + esc(st.note) + "</p>"
     : "";
-  var themePick = "<h4 style=\"margin-top:18px\">Serves theme</h4><div class=\"fmt-picker\">" +
-    [1,2].map(function(n){
-      return "<button data-th=\"" + slot.key + "|" + n + "\" aria-pressed=\"" +
-        (themeOf(week, slot) === n) + "\">" + (n === 1 ? "A" : "B") + ": " + esc(themeText(week, n)) + "</button>";
-    }).join("") + "</div>";
-  var roleSwitch = slot.key === "sun"
-    ? "<h4 style=\"margin-top:18px\">This slot runs</h4><div class=\"fmt-picker\">" +
-      [["experiment","Community question"],["review","Student review"]].map(function(r){
-        return "<button data-role=\"" + r[0] + "\" aria-pressed=\"" + (slot.role === r[0]) + "\">" + r[1] + "</button>";
-      }).join("") + "</div>"
-    : "";
-  var right = "<div>" + panels +
-    "<h4 style=\"margin-top:" + (panels ? "18px" : "0") + "\">Format</h4>" +
-    "<div class=\"fmt-picker\">" + FORMATS.map(function(f){
-      return "<button data-fmt=\"" + slot.key + "|" + f + "\" aria-pressed=\"" + (f === fmt) + "\">" + f + "</button>";
-    }).join("") + "</div>" + themePick + roleSwitch +
-    "<h4 style=\"margin-top:18px\">Note</h4>" +
-    "<textarea class=\"note\" data-note=\"" + slot.key + "\" placeholder=\"Anything the writer needs to know\">" +
-      esc(st.note || "") + "</textarea>" + hist +
-    (state.errors[id] ? "<div class=\"err\">" + esc(state.errors[id]) + "</div>" : "") +
-    "</div>";
-  return "<div class=\"detail\">" + left + right + "</div>";
+  return "<div class=\"detail\">" + left + "<div>" + panels + note + "</div></div>";
 }
 
 function renderGrid(){
@@ -1284,8 +1105,7 @@ function renderGrid(){
   grid.innerHTML = slots.map(function(slot){
     var id = slotId(w.id, slot.key), copy = currentCopy(w, slot), fmt = formatOf(w, slot);
     var open = state.open === id, status = statusOf(w, slot);
-    var n = notesFor(w, slot, slots), busy = state.busy[id];
-    var canRoll = false; /* re roll needs Claude runtime, absent on this read only page */
+    var n = notesFor(w, slot, slots);
     var tn = themeOf(w, slot);
     return "<article class=\"card" + (open ? " is-open" : "") + (slot.lane === "brand" ? " brand" : "") + "\">" +
       "<div class=\"card-top\"><span class=\"day\">" + slot.day + "</span>" +
@@ -1303,10 +1123,8 @@ function renderGrid(){
         n.info.map(function(t){ return "<div class=\"info\"><b>&#9679;</b><span>" + esc(t) + "</span></div>"; }).join("") +
       "</div>" +
       "<div class=\"card-foot\">" +
-        "<button class=\"status\" data-status=\"" + slot.key + "\" data-s=\"" + status + "\">" + status + "</button>" +
-        (canRoll ? "<button class=\"icon-btn\" data-roll=\"" + slot.key + "\"" + (busy ? " disabled" : "") + ">" +
-          "<span" + (busy ? " class=\"spin\"" : "") + " style=\"display:inline-flex\">" + ICON_ROLL + "</span>" +
-          (busy ? "Rolling" : "Re roll") + "</button>" : "<span style=\"margin-left:auto\"></span>") +
+        "<span class=\"status\" data-s=\"" + status + "\">" + status + "</span>" +
+        "<span style=\"margin-left:auto\"></span>" +
         "<button class=\"icon-btn\" data-open=\"" + slot.key + "\" aria-expanded=\"" + open + "\">" +
           (open ? "Close" : (slot.role === "review" ? "Frame" : "Example")) + "</button>" +
       "</div>" +
@@ -1317,7 +1135,7 @@ function renderGrid(){
 
 function setView(v){
   if (v === state.view) return;
-  if (v === "month") state.month = WEEKS[state.week].mi;
+  if (v === "month" && WEEKS.length) state.month = WEEKS[state.week].mi;
   state.view = v;
   state.open = null;
   render();
@@ -1328,6 +1146,18 @@ function render(){
   Array.prototype.forEach.call(document.querySelectorAll(".zoom button"), function(b){
     b.setAttribute("aria-selected", String(b.dataset.view === v));
   });
+  if (!WEEKS.length){
+    var done = "<p class=\"ov-lede\">Every planned week has passed. Nothing left on the board.</p>";
+    tabTitle.textContent = "Board";
+    railWrap.hidden = true;
+    weekHead.hidden = true;
+    wView.hidden = v !== "week";
+    mView.hidden = v !== "month";
+    qView.hidden = v !== "quarter";
+    grid.className = "grid";
+    grid.innerHTML = done; mView.innerHTML = done; qView.innerHTML = done;
+    return;
+  }
   tabTitle.textContent = v === "week" ? "Week " + WEEKS[state.week].n :
     v === "month" ? MONTHS[state.month].label : "Quarter";
   railWrap.hidden = v !== "week";
@@ -1341,12 +1171,6 @@ function render(){
 }
 
 /* ---------- events ---------- */
-function slotByKey(week, key){
-  var found = null;
-  slotsFor(week).forEach(function(s){ if (s.key === key) found = s; });
-  return found;
-}
-
 document.addEventListener("click", function(ev){
   var t = ev.target.closest("button");
   if (!t) return;
@@ -1375,51 +1199,6 @@ document.addEventListener("click", function(ev){
     var oid = slotId(w.id, t.dataset.open);
     state.open = state.open === oid ? null : oid; render(); return;
   }
-  if (t.dataset.status !== undefined){
-    var slot = slotByKey(w, t.dataset.status);
-    var order = ["idea","approved","posted"];
-    var next = order[(order.indexOf(statusOf(w, slot)) + 1) % 3];
-    saveSlot(slotId(w.id, slot.key), {status:next}); render(); return;
-  }
-  if (t.dataset.roll !== undefined){ reroll(w, slotByKey(w, t.dataset.roll)); return; }
-  if (t.dataset.gen !== undefined){ reroll(w, slotByKey(w, t.dataset.gen)); return; }
-  if (t.dataset.fmt !== undefined){
-    var parts = t.dataset.fmt.split("|");
-    saveSlot(slotId(w.id, parts[0]), {format:parts[1]}); render(); return;
-  }
-  if (t.dataset.th !== undefined){
-    var tp = t.dataset.th.split("|");
-    saveSlot(slotId(w.id, tp[0]), {theme:+tp[1]}); render(); return;
-  }
-  if (t.dataset.role !== undefined){
-    saveSlot(slotId(w.id, "sun"), {role:t.dataset.role, format:null, cursor:-1});
-    render(); return;
-  }
-  if (t.dataset.hist !== undefined){
-    var hp = t.dataset.hist.split("|"), dir = +hp[1];
-    var hid = slotId(w.id, hp[0]), hst = slotState(hid);
-    var rolls2 = hst.history || [];
-    var c2 = typeof hst.cursor === "number" ? hst.cursor : rolls2.length - 1;
-    saveSlot(hid, {cursor:Math.max(-1, Math.min(rolls2.length - 1, c2 + dir))}); render(); return;
-  }
-});
-
-grid.addEventListener("change", function(ev){
-  var el = ev.target, w = WEEKS[state.week];
-  if (!el.dataset) return;
-  if (el.dataset.note !== undefined) saveSlot(slotId(w.id, el.dataset.note), {note:el.value});
-  if (el.dataset.quote !== undefined){ saveSlot(slotId(w.id, el.dataset.quote), {quote:el.value}); render(); }
-  if (el.dataset.who !== undefined) saveSlot(slotId(w.id, el.dataset.who), {who:el.value});
-});
-
-[[th1, 1], [th2, 2]].forEach(function(pair){
-  pair[0].addEventListener("change", function(){
-    var w = WEEKS[state.week], v = pair[0].value.replace(/\s+/g, " ").trim();
-    var patch = {};
-    patch["theme" + pair[1]] = v || (pair[1] === 1 ? w.theme : w.theme2);
-    saveWeek(w.id, patch);
-    render();
-  });
 });
 
 var railTimer = null;
@@ -1445,7 +1224,7 @@ if (window.claude && claude.use){
   claude.use("db").then(function(d){
     if (!d) return;
     db = d;
-    document.getElementById("dbState").textContent = "Saved to the shared board.";
+    document.getElementById("dbState").textContent = "Read only. Showing the last saved plan.";
     db.collection("slots").onSnapshot(function(snap){
       var next = {};
       snap.docs.forEach(function(doc){ next[doc.id] = doc.data(); });
